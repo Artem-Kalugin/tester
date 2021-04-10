@@ -1,0 +1,28 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --gs-100: #000000;
+    --gs-80: #3b4347;
+    --gs-60: #737f85;
+    --gs-40: #c7d3d9;
+    --gs-20: #e4edf2;
+    --gs-10: #f0f6fa;
+    --gs-0: #fafdff;
+    --color-primary: #1e8fe6;
+    --color-bg: #9ed5ff;
+    --color-accent: #27e89b;
+    --color-danger: #e81741;
+    --fullwidth: 100%;
+}
+
+.shadow-small {
+    box-shadow: -1px 7px 5px -6px rgba(0, 0, 0, 0.06);
+}
+
+.shadow-large {
+    box-shadow: -1px 7px 40px -11px rgba(0, 0, 0, 0.56);
+}
