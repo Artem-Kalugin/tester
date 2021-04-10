@@ -11,7 +11,7 @@ module.exports = plop => {
     actions: [
       { 
         type: 'add',
-        path: 'src/components/{{pascalCase name}}/{{pascalCase name}}.js',
+        path: 'src/components/{{pascalCase name}}/{{pascalCase name}}.jsx',
         templateFile: 'plop-templates/Component/Component.js.hbs',
       },
       {
@@ -58,8 +58,78 @@ module.exports = plop => {
     actions: [
       {
         type: 'add',
-        path: 'src/components/{{pascalCase name}}.js',
-        templateFile: 'plop-templates/Page.js.hbs',
+        path: 'src/pages/{{pascalCase name}}/{{pascalCase name}}.jsx',
+        templateFile: 'plop-templates/Page/Page.js.hbs',
+      },
+      {
+        type: 'add',
+        path:
+          'src/pages/{{pascalCase name}}/{{pascalCase name}}.module.scss',
+        templateFile:
+          'plop-templates/Page/Page.module.scss.hbs',
+      },
+      {
+        type: 'add',
+        path: 'src/pages/{{pascalCase name}}/index.js',
+        templateFile: 'plop-templates/Page/index.js.hbs',
+      },
+      {
+        type: 'add',
+        path: 'src/pages/index.js',
+        templateFile: 'plop-templates/injectable-index.js.hbs',
+        skipIfExists: true,
+      },
+      {
+        type: 'append',
+        path: 'src/pages/index.js',
+        pattern: `/* PLOP_INJECT_IMPORT */`,
+        template: `import {{pascalCase name}} from './{{pascalCase name}}';`,
+      },
+      {
+        type: 'append',
+        path: 'src/pages/index.js',
+        pattern: `/* PLOP_INJECT_EXPORT */`,
+        template: `\t{{pascalCase name}},`,
+      },
+    ],
+  });
+  plop.setGenerator('nestedPage', {
+    description: 'Create a new page inside another one',
+    prompts: [
+      {
+        type: 'input',
+        name: 'name',
+        message: 'Enter new page name'
+      },
+      {
+        type: 'input',
+        name: 'source',
+        message: 'Enter source page path'
+      },
+    ],
+    actions: [
+      {
+        type: 'add',
+        path: 'src/pages/{{pascalCase source}}/{{pascalCase name}}/{{pascalCase name}}.jsx',
+        templateFile: 'plop-templates/Page/Page.js.hbs',
+      },
+      {
+        type: 'add',
+        path:
+          'src/pages/{{pascalCase source}}/{{pascalCase name}}/{{pascalCase name}}.module.scss',
+        templateFile:
+          'plop-templates/Page/Page.module.scss.hbs',
+      },
+      {
+        type: 'add',
+        path: 'src/pages/{{pascalCase source}}/{{pascalCase name}}/index.js',
+        templateFile: 'plop-templates/Page/index.js.hbs',
+      },
+      {
+        type: 'add',
+        path: 'src/pages/index.js',
+        templateFile: 'plop-templates/injectable-index.js.hbs',
+        skipIfExists: true,
       },
     ],
   });
