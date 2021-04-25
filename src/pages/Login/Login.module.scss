@@ -1,0 +1,16 @@
+.wrapper {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  background: var(--gs-10);
+}
+
+.loginWrapper {
+  height: 390px;
+  width: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--gs-0);
+}

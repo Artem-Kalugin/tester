@@ -1,28 +1,45 @@
 import './App.css';
 import { Header } from './components';
-import { AdminPanel, Welcoming, Tests } from './pages';
+import { AdminPanel, Welcoming, Tests, Login, Registration } from './pages';
 import {
   Switch,
   Route,
-  BrowserRouter as Router,
+  HashRouter as Router,
 } from "react-router-dom";
 
+const Main = () => {
+  return (
+    <>
+    <Header />    
+    <Switch>
+      <Route exact path="/">
+        <Welcoming />
+      </Route>
+      <Route path="/tests">
+        <Tests />
+      </Route>
+      <Route path="/admin">
+        <AdminPanel />
+      </Route>
+    </Switch> 
+    </>
+  )
+}
 function App() {
   return (
     <Router>
     <div className="App">
-      <Header />    
       <Switch>
-          <Route exact path="/">
-            <Welcoming />
-          </Route>
-          <Route path="/tests">
-            <Tests />
-          </Route>
-          <Route path="/admin">
-            <AdminPanel />
-          </Route>
-        </Switch>  
+        <Route exact path="/login">
+          <Login />
+        </Route>
+        <Route exact path="/registration">
+          <Registration/>
+        </Route>
+        <Route path='/'>
+          <Main />
+        </Route>
+      </Switch> 
     </div>
     </Router>
   );
