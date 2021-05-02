@@ -1,6 +1,6 @@
 import './App.css';
 import { Header } from './components';
-import { AdminPanel, Welcoming, Tests, Login, Registration } from './pages';
+import { AdminPanel, Welcoming, Tests, Login, Registration, Test } from './pages';
 import {
   Switch,
   Route,
@@ -17,6 +17,9 @@ const Main = () => {
       </Route>
       <Route path="/tests">
         <Tests />
+      </Route>
+      <Route path="/test">
+        <Test />
       </Route>
       <Route path="/admin">
         <AdminPanel />
