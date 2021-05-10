@@ -4,7 +4,7 @@ import ActiveSessions from './ActiveSessions';
 import AddSession from './AddSession';
 import AdminSidebar from './AdminSidebar';
 import AddTest from './AddTest';
-
+import DeleteTest from './DeleteTest';
 const AdminPanelContainer = props => {
   const {path, url} = useRouteMatch();
   return (
@@ -19,6 +19,9 @@ const AdminPanelContainer = props => {
     </Route>
     <Route path={`${path}/add-test`}>
       <AddTest />
+    </Route>
+    <Route path={`${path}/delete-test`}>
+      <DeleteTest />
     </Route>
     <Route path="/">
       <ActiveSessions />

@@ -35,9 +35,7 @@ const AddSession = props => {
             <Form.Item
               label="Тест"
               name="Test"
-              rules={[
-                { required: true, message: 'Пожалуйста, выберите тест. ' },
-              ]}>
+              rules={[{ required: true, message: '' }]}>
               <Select
                 showSearch
                 placeholder="Выберите тест"
@@ -55,9 +53,7 @@ const AddSession = props => {
             <Form.Item
               label="Группы"
               name="password"
-              rules={[
-                { required: true, message: 'Пожалуйста, введите группы.' },
-              ]}>
+              rules={[{ required: true, message: '' }]}>
               <Select
                 mode="multiple"
                 allowClear
@@ -74,8 +70,7 @@ const AddSession = props => {
               rules={[
                 {
                   required: true,
-                  message:
-                    'Пожалуйста, введите дату до которой будет действителен тест.',
+                  message: '',
                 },
               ]}>
               <DatePicker />
@@ -90,7 +85,7 @@ const AddSession = props => {
               rules={[
                 {
                   required: true,
-                  message: 'Пожалуйста, введите время прохождения теста.',
+                  message: '',
                 },
               ]}>
               <TimePicker

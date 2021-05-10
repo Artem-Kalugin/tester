@@ -4,15 +4,12 @@ import * as csv from "csvtojson";
 
 const AddTestContainer = props => {
   const parse = async (file) => {
-    csv({ 
+    const data = await csv({ 
       noheader:true,
       trim:true,
       headers: ['questionTitle','questionText','answers','rightAnswer']
     })
     .fromString(await file.text())
-    .then((data) => {
-      console.log(data);
-    })
     return false;
   }
 
