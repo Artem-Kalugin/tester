@@ -4,6 +4,7 @@ import { Upload, Button, Typography, Input, Space } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 
 const AddTest = props => {
+  console.log(props);
   return (
     <div className={`${s.wrapper}`}>
       <Space direction="vertical">
@@ -19,13 +20,22 @@ const AddTest = props => {
             <div style={{ marginTop: 8 }}>Upload</div>
           </div>
         </Upload>
-        <Input placeholder="Введите название теста"></Input>
+        <Input
+          value={props.name}
+          onChange={e => props.setName(e.target.value)}
+          placeholder="Введите название теста"
+        />
         <div className={s.aligner}>
-          <Typography.Text classNamee={s.text} type="secondary">
+          <Typography.Text className={s.text} type="secondary">
             Просмотреть тест
           </Typography.Text>
         </div>
-        <Button type="primary">Загрузить</Button>
+        <Button
+          onClick={props.upload}
+          disabled={!(props.preparedData && props.name)}
+          type="primary">
+          Загрузить
+        </Button>
       </Space>
     </div>
   );

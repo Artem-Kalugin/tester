@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import s from './Registration.module.scss';
 import { Typography, Space, Button, Input, Form, Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
+import { useHistory } from 'react-router-dom';
 
 const Registration = props => {
+  const history = useHistory();
+
   const layout = {
     wrapperCol: { span: 40 },
   };
@@ -24,41 +27,70 @@ const Registration = props => {
               rules={[
                 { required: true, message: 'Пожалуйста, введите вашу почту!' },
               ]}>
-              <Input placeholder="Почта" />
+              <Input
+                onChange={e => {
+                  props.setEmail(e.target.value);
+                }}
+                value={props.email}
+                placeholder="Почта"
+              />
             </Form.Item>
             <Form.Item
               name="password"
               rules={[
                 { required: true, message: 'Пожалуйста, введите пароль!' },
               ]}>
-              <Input placeholder="Пароль" />
+              <Input
+                onChange={e => {
+                  props.setPassword(e.target.value);
+                }}
+                value={props.password}
+                placeholder="Пароль"
+              />
             </Form.Item>
             <Form.Item
               name="passRepeat"
               rules={[
                 { required: true, message: 'Пожалуйста, введите пароль!' },
               ]}>
-              <Input placeholder="Повторите пароль" />
+              <Input
+                onChange={e => {
+                  props.setRepeatPassword(e.target.value);
+                }}
+                value={props.repeatPassword}
+                placeholder="Повторите пароль"
+              />
             </Form.Item>
 
             <Form.Item {...layout}>
               <Space align="start" size="small" direction="vertical">
                 <Typography.Text type="secondary" strong>
-                  Ваше имя:{' '}
+                  Ваше имя: {props.data.name}
                 </Typography.Text>
                 <Typography.Text type="secondary" strong>
-                  Ваша фамилия:{' '}
+                  Ваша фамилия: {props.data.lastName}
                 </Typography.Text>
                 <Typography.Text type="secondary" strong>
-                  Ваша группа:{' '}
+                  Ваша группа: {props.data.group}
                 </Typography.Text>
               </Space>
             </Form.Item>
 
             <Form.Item>
               <Space direction="horizontal">
-                <Button type="primary">Зарегистрироваться</Button>
-                <Button>Авторизация</Button>
+                <Button
+                  onClick={() => {
+                    props.register();
+                  }}
+                  type="primary">
+                  Зарегистрироваться
+                </Button>
+                <Button
+                  onClick={() => {
+                    history.push('/login');
+                  }}>
+                  Авторизация
+                </Button>
               </Space>
             </Form.Item>
           </Form>
@@ -67,7 +99,6 @@ const Registration = props => {
             <Form.Item {...layout}>
               <Typography.Title>Регистрация</Typography.Title>
             </Form.Item>
-
             <Form.Item
               name="id"
               rules={[
@@ -91,11 +122,19 @@ const Registration = props => {
                   type="primary">
                   Продолжить
                 </Button>
-                <Button>Авторизация</Button>
+                <Button
+                  onClick={() => {
+                    history.push('/login');
+                  }}>
+                  Авторизация
+                </Button>
               </Space>
             </Form.Item>
           </Form>
         )}
+        {props.errorMessage ? (
+          <Typography.Text type="danger">{props.errorMessage}</Typography.Text>
+        ) : null}
       </div>
     </div>
   );

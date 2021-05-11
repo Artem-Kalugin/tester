@@ -4,6 +4,8 @@ import { Button, Menu, Dropdown } from 'antd';
 import logo from '../../assets/logo192.png';
 import { UserOutlined } from '@ant-design/icons';
 import { Link, useLocation } from 'react-router-dom';
+import firebase from "firebase/app";
+import "firebase/auth";
 
 const profileDropdown = (
   <Menu>
@@ -11,7 +13,9 @@ const profileDropdown = (
       <a>Настройки</a>
     </Menu.Item>
     <Menu.Item>
-      <a>Выйти из профиля</a>
+      <a onClick={async () => {
+        await firebase.auth().signOut();
+      }}>Выйти из профиля</a>
     </Menu.Item>
   </Menu>
 );
