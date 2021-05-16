@@ -1,13 +1,64 @@
 import React from 'react';
 import s from './ActiveSessions.module.scss';
-import { Typography, Table, Tag, Space } from 'antd';
+import { Typography, Table } from 'antd';
+import moment from 'moment';
+
+export const prettyCountyWord = (counter, oneWord, noWord, aLotOfWord) => {
+  if (counter % 10 === 1 && counter !== 11) {
+    return oneWord;
+  } else if (
+    [2, 3, 4].some(el => el === counter % 10) &&
+    ![12, 13, 14].some(el => el === counter)
+  ) {
+    return noWord;
+  } else {
+    return aLotOfWord;
+  }
+};
+
+const parseTime = seconds => {
+  const parser = moment.duration(seconds);
+  const weeks = parser.asWeeks();
+  const days = parser.asDays();
+  const hours = parser.asHours();
+  const minutes = parser.asMinutes();
+  if (days > 7) {
+    const date = Math.round(weeks);
+    return date + ' ' + prettyCountyWord(date, 'неделя', 'недели', 'недель');
+  } else if (days > 1) {
+    return (
+      Math.floor(days) +
+      ' ' +
+      prettyCountyWord(Math.floor(days), 'день', 'дня', 'дней') +
+      ' ' +
+      Math.floor(hours - Math.floor(days) * 24) +
+      ' ' +
+      prettyCountyWord(
+        Math.floor(hours - Math.floor(days) * 24),
+        'час',
+        'часа',
+        'часов',
+      )
+    );
+  } else {
+    return (
+      Math.floor(hours) +
+      ' ' +
+      prettyCountyWord(Math.floor(hours), 'час', 'часа', 'часов') +
+      ' ' +
+      Math.floor(minutes - Math.floor(hours) * 60) +
+      ' ' +
+      prettyCountyWord(
+        Math.floor(minutes - Math.floor(hours) * 60),
+        'минута',
+        'минуты',
+        'минут',
+      )
+    );
+  }
+};
 
 const columns = [
-  {
-    title: 'Id',
-    dataIndex: 'id',
-    key: 'id',
-  },
   {
     title: 'Тест',
     dataIndex: 'test',
@@ -15,8 +66,8 @@ const columns = [
   },
   {
     title: 'Доступно для ',
-    dataIndex: 'openedTo',
-    key: 'openedTo',
+    dataIndex: 'groups',
+    key: 'groups',
     render: openedTo => {
       return openedTo.map((el, index) => (
         <Typography.Text key={el}>
@@ -28,141 +79,15 @@ const columns = [
   },
   {
     title: 'Оставшееся время',
-    dataIndex: 'remainingTime',
-    key: 'remainingTime',
-  },
-  {
-    title: 'Завершили',
-    dataIndex: 'progress',
-    key: 'progress',
-  },
-  {
-    title: 'Средняя оценка',
-    dataIndex: 'averageMark',
-    key: 'averageMark',
-  },
-];
-
-const testData = [
-  {
-    id: 1,
-    test: 'Тест 1',
-    openedTo: ['831943', 'name'],
-    remainingTime: '1hr 30min',
-    progress: '16/26',
-    averageMark: '8.7',
-  },
-  {
-    id: 1,
-    test: 'Тест 1',
-    openedTo: ['831943', 'name'],
-    remainingTime: '1hr 30min',
-    progress: '16/26',
-    averageMark: '8.7',
-  },
-  {
-    id: 1,
-    test: 'Тест 1',
-    openedTo: ['831943', 'name'],
-    remainingTime: '1hr 30min',
-    progress: '16/26',
-    averageMark: '8.7',
-  },
-  {
-    id: 1,
-    test: 'Тест 1',
-    openedTo: ['831943', 'name'],
-    remainingTime: '1hr 30min',
-    progress: '16/26',
-    averageMark: '8.7',
-  },
-  {
-    id: 1,
-    test: 'Тест 1',
-    openedTo: ['831943', 'name'],
-    remainingTime: '1hr 30min',
-    progress: '16/26',
-    averageMark: '8.7',
-  },
-  {
-    id: 1,
-    test: 'Тест 1',
-    openedTo: ['831943', 'name'],
-    remainingTime: '1hr 30min',
-    progress: '16/26',
-    averageMark: '8.7',
-  },
-  {
-    id: 1,
-    test: 'Тест 1',
-    openedTo: ['831943', 'name'],
-    remainingTime: '1hr 30min',
-    progress: '16/26',
-    averageMark: '8.7',
-  },
-  {
-    id: 1,
-    test: 'Тест 1',
-    openedTo: ['831943', 'name'],
-    remainingTime: '1hr 30min',
-    progress: '16/26',
-    averageMark: '8.7',
-  },
-  {
-    id: 1,
-    test: 'Тест 1',
-    openedTo: ['831943', 'name'],
-    remainingTime: '1hr 30min',
-    progress: '16/26',
-    averageMark: '8.7',
-  },
-  {
-    id: 1,
-    test: 'Тест 1',
-    openedTo: ['831943', 'name'],
-    remainingTime: '1hr 30min',
-    progress: '16/26',
-    averageMark: '8.7',
-  },
-  {
-    id: 1,
-    test: 'Тест 1',
-    openedTo: ['831943', 'name'],
-    remainingTime: '1hr 30min',
-    progress: '16/26',
-    averageMark: '8.7',
-  },
-  {
-    id: 1,
-    test: 'Тест 1',
-    openedTo: ['831943', 'name'],
-    remainingTime: '1hr 30min',
-    progress: '16/26',
-    averageMark: '8.7',
-  },
-  {
-    id: 1,
-    test: 'Тест 1',
-    openedTo: ['831943', 'name'],
-    remainingTime: '1hr 30min',
-    progress: '16/26',
-    averageMark: '8.7',
-  },
-  {
-    id: 1,
-    test: 'Тест 1',
-    openedTo: ['831943', 'name'],
-    remainingTime: '1hr 30min',
-    progress: '16/26',
-    averageMark: '8.7',
-  },
-  {
-    id: 1,
-    test: 'Тест 1',
-    openedTo: ['831943', 'name'],
-    remainingTime: '1hr 30min',
-    progress: '16/26',
-    averageMark: '8.7',
+    dataIndex: 'date',
+    key: 'date',
+    render: date => {
+      return (
+        <Typography.Text>
+          {parseTime(moment(date).diff(moment(new Date())))}
+        </Typography.Text>
+      );
+    },
   },
 ];
 
@@ -170,7 +95,11 @@ const ActiveSessions = props => {
   return (
     <div className={`${s.wrapper}`}>
       <Typography.Title level={2}>Активные сессии</Typography.Title>
-      <Table columns={columns} dataSource={testData} className={s.table} />
+      <Table
+        columns={columns}
+        dataSource={props.sessions}
+        className={s.table}
+      />
     </div>
   );
 };

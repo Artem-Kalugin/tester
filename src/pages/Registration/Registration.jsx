@@ -11,17 +11,14 @@ const Registration = props => {
     wrapperCol: { span: 40 },
   };
 
-  const [recieved, setRecieved] = useState(false);
-
   return (
     <div className={`${s.wrapper}`}>
       <div className={`${s.registrationWrapper} + shadow-large`}>
-        {recieved ? (
+        {props.data ? (
           <Form>
             <Form.Item {...layout}>
               <Typography.Title>Регистрация</Typography.Title>
             </Form.Item>
-
             <Form.Item
               name="email"
               rules={[
@@ -61,7 +58,6 @@ const Registration = props => {
                 placeholder="Повторите пароль"
               />
             </Form.Item>
-
             <Form.Item {...layout}>
               <Space align="start" size="small" direction="vertical">
                 <Typography.Text type="secondary" strong>
@@ -75,7 +71,6 @@ const Registration = props => {
                 </Typography.Text>
               </Space>
             </Form.Item>
-
             <Form.Item>
               <Space direction="horizontal">
                 <Button
@@ -102,12 +97,16 @@ const Registration = props => {
             <Form.Item
               name="id"
               rules={[
-                { required: true, message: 'Пожалуйста, введите ваш id!' },
+                {
+                  required: true,
+                  message: 'Пожалуйста, введите ваш инвайт код',
+                },
               ]}>
               <Input
-                placeholder="Номер ученика"
+                onChange={e => props.setInviteCode(e.target.value)}
+                placeholder="Инвайт код"
                 suffix={
-                  <Tooltip title="Номер ученика для регистрации можно получить у преподователя">
+                  <Tooltip title="Инвайт код для регистрации можно получить у преподователя">
                     <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
                   </Tooltip>
                 }
@@ -116,9 +115,8 @@ const Registration = props => {
             <Form.Item>
               <Space direction="horizontal">
                 <Button
-                  onClick={() => {
-                    setRecieved(true);
-                  }}
+                  onClick={props.recieve}
+                  loading={props.loading}
                   type="primary">
                   Продолжить
                 </Button>

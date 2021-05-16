@@ -1,14 +1,7 @@
 .wrapper {
   display: flex;
   flex: 1;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 24px;
   background: var(--gs-0);
-  border-width: 1;
-}
-
-.formContainer {
-  margin-right: 11%;
 }

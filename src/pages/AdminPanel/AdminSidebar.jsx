@@ -36,7 +36,11 @@ const AdminSidebar = props => {
         </SubMenu>
         <SubMenu key="sub2" icon={<TeamOutlined />} title="Студенты">
           <Menu.Item key="5">Просмотр</Menu.Item>
-          <Menu.Item key="6">Регистрация студентов</Menu.Item>
+          <Menu.Item key="6">
+            <Link to={`${props.matchUrl}/add-students`}>
+              Регистрация студентов
+            </Link>
+          </Menu.Item>
         </SubMenu>
       </Menu>
     </div>

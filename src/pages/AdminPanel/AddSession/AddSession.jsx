@@ -1,6 +1,6 @@
 import React from 'react';
 import s from './AddSession.module.scss';
-import { Typography } from 'antd';
+import { Typography, Spin } from 'antd';
 import {
   Form,
   Button,
@@ -14,94 +14,119 @@ import moment from 'moment';
 const { Option } = Select;
 
 const layout = {
-  labelCol: { span: 8 },
+  labelCol: { span: 10 },
   wrapperCol: { span: 20 },
 };
 const tailLayout = {
-  wrapperCol: { offset: 8, span: 16 },
+  wrapperCol: { offset: 10, span: 16 },
 };
 
 const AddSession = props => {
+  console.log(props);
   return (
     <div className={`${s.wrapper}`}>
-      <div className={s.formContainer}>
-        <Typography.Title level={2}>Добавление сессии</Typography.Title>
-        <div className={s.centerer}>
-          <Form
-            {...layout}
-            name="basic"
-            initialValues={{ remember: true }}
-            requiredMark={false}>
-            <Form.Item
-              label="Тест"
-              name="Test"
-              rules={[{ required: true, message: '' }]}>
-              <Select
-                showSearch
-                placeholder="Выберите тест"
-                optionFilterProp="children">
-                <Option value="jack">Тест 1</Option>
-                <Option value="lucy">2</Option>
-                <Option value="tom">3</Option>
-              </Select>
-            </Form.Item>
+      {props.testsFetched && props.groupsFetched ? (
+        <>
+          <Typography.Title level={2}>Добавление сессии</Typography.Title>
+          <div className={s.formContainer}>
+            <div className={s.centerer}>
+              <Form
+                {...layout}
+                layout="horizontal"
+                name="addTest"
+                onFinish={params => props.addSession(params)}
+                initialValues={{
+                  attemptTime: moment('01:00', 'HH:mm'),
+                  attempts: 1,
+                }}
+                requiredMark={false}>
+                <Form.Item
+                  label="Тест"
+                  name="testId"
+                  style={{ width: '100%' }}
+                  rules={[{ required: true, message: '' }]}>
+                  <Select showSearch placeholder="Выберите тест">
+                    {props.tests?.length
+                      ? props.tests.map(el => {
+                          return (
+                            <Option key={el.uid} value={el.uid}>
+                              {el.name}
+                            </Option>
+                          );
+                        })
+                      : null}
+                  </Select>
+                </Form.Item>
 
-            <Form.Item name="try" label="Попытки">
-              <InputNumber min={1} defaultValue={1} />
-            </Form.Item>
+                <Form.Item name="attempts" label="Попытки">
+                  <InputNumber min={1} />
+                </Form.Item>
 
-            <Form.Item
-              label="Группы"
-              name="password"
-              rules={[{ required: true, message: '' }]}>
-              <Select
-                mode="multiple"
-                allowClear
-                style={{ width: '100%' }}
-                placeholder="Выберите для каких групп тест">
-                <Option value="lucy">102</Option>
-                <Option value="tom">103</Option>
-              </Select>
-            </Form.Item>
+                <Form.Item
+                  label="Группы"
+                  name="groups"
+                  rules={[{ required: true, message: '' }]}>
+                  <Select
+                    mode="multiple"
+                    allowClear
+                    placeholder="Выберите для каких групп тест">
+                    {props.groups?.length
+                      ? props.groups.map(el => {
+                          return (
+                            <Option key={el.uid} value={el.group}>
+                              {el.group}
+                            </Option>
+                          );
+                        })
+                      : null}
+                  </Select>
+                </Form.Item>
 
-            <Form.Item
-              label="Действителен до"
-              name="availabelDate"
-              rules={[
-                {
-                  required: true,
-                  message: '',
-                },
-              ]}>
-              <DatePicker />
-              <TimePicker
-                defaultValue={moment('00:00', 'HH:mm')}
-                format="HH:mm"
-              />
-            </Form.Item>
-            <Form.Item
-              label="Время попытки"
-              name="availabelDate"
-              rules={[
-                {
-                  required: true,
-                  message: '',
-                },
-              ]}>
-              <TimePicker
-                defaultValue={moment('01:00', 'HH:mm')}
-                format="HH:mm"
-              />
-            </Form.Item>
+                <Form.Item
+                  label="Действителен"
+                  name="date"
+                  rules={[
+                    {
+                      required: true,
+                      message: '',
+                    },
+                  ]}>
+                  <DatePicker
+                    disabledDate={d => !d || d.isBefore(new Date())}
+                    showTime
+                    placeholder="Дата и время"
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Время попытки"
+                  name="attemptTime"
+                  rules={[
+                    {
+                      required: true,
+                      message: '',
+                    },
+                  ]}>
+                  <TimePicker
+                    format="HH:mm"
+                    placeholder="Выберите длительность попытки"
+                  />
+                </Form.Item>
 
-            <Form.Item {...tailLayout}>
-              <Button type="primary" htmlType="submit">
-                Добавить
-              </Button>
-            </Form.Item>
-          </Form>
-        </div>
-      </div>
+                <Form.Item {...tailLayout}>
+                  <Button
+                    loading={props.loading}
+                    type="primary"
+                    htmlType="submit">
+                    Добавить
+                  </Button>
+                </Form.Item>
+              </Form>
+            </div>
+          </div>
+        </>
+      ) : (
+        <Spin />
+      )}
     </div>
   );
 };

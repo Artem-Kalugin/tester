@@ -78,6 +78,7 @@ const AddTestContainer = props => {
     }).filter(el => el);
     return formattedData;
   }
+  
   return (
     <AddTest upload={upload} preparedData={preparedData} parse={parse} name={name} setName={setName} {...props} />
   );
