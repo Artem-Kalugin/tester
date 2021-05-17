@@ -57,23 +57,19 @@ const AddStudentsContainer = props => {
     try {
       message.loading({ content: 'Loading...', key: 'add-student' });
       const groupsFetched = await db.collection("groups").get();
-      const groups = groupsFetched.docs.map(el => {
-        return {
-          id: el.id,
-          data: el.data()
-        };
+      const groups = groupsFetched?.docs?.map(el => {
+        return el.data();
       });
+      const newGroups = [];
       const _result = [];
       let index = 0;
       for (const el of preparedData) {
         index++;
         try {
           const generatedInviteCode = generateInviteCode();
-          const studentGroup = groups.find(item => item.data?.group === el.group);
+          const studentGroup = [...groups, ...newGroups].find(item => item.group === el.group);
           if (!studentGroup) {
-            groups.push({id: null, data: {group: el.group, studentAmount: 1}});
-          } else {
-            studentGroup.data.studentAmount++;
+            newGroups.push({group: el.group, studentAmount: 0});
           }
           const addInvitation = await db.collection("invites").doc().set({...el, inviteCode: generatedInviteCode});
           _result.push(`${index}.\t${el.group}\t${el.name}\t${el.lastName}\t${generatedInviteCode}\t`);
@@ -83,12 +79,8 @@ const AddStudentsContainer = props => {
         }
       }
       try {
-        for (const el of groups) {
-          if (el.id) {
-            await db.collection('groups').doc(el.id).set(el.data);
-          } else {
-            await db.collection('groups').doc().set(el.data);
-          }
+        for (const el of newGroups) {
+          await db.collection('groups').doc().set(el);
         }
       } catch (e) {console.log(e)}
       setResult(_result.join('\n'));

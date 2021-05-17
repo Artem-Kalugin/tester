@@ -5,6 +5,8 @@ import App from './App';
 import firebase from 'firebase/app';
 import "firebase/auth";
 import { FirebaseAuthProvider } from '@react-firebase/auth'
+import { Provider } from 'react-redux';
+import { store } from './store/index';
 
 const config = {
   apiKey: "AIzaSyCLr3GLQExS1zUXTOkUdIVPEqY2WFf3Ou0",
@@ -17,11 +19,14 @@ const config = {
 };
 
 firebase.initializeApp(config);
+console.log(store);
 
 ReactDOM.render(
   <React.StrictMode>
     <FirebaseAuthProvider firebase={firebase} {...config}>
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </FirebaseAuthProvider>
   </React.StrictMode>,
   document.getElementById('root')

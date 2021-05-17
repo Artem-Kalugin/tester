@@ -9,25 +9,40 @@ import {
 } from "react-router-dom";
 import firebase from "firebase/app";
 import "firebase/auth";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearUser, setUser } from './store/user-reducer';
+import moment from 'moment';
+
+moment.locale('ru');
 
 
 const Main = () => {
   const [isCalculated, setIsCalculated] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
+  const dispatch = useDispatch();
+  const userState = useSelector(store => store);
+  
 
   const detectUser = async () => {
-    await firebase.auth().onAuthStateChanged(function(user) {
+    await firebase.auth().onAuthStateChanged(async function(user) {
       if (user) {
+        firebase.firestore().collection('users').doc(user.uid).get().then(opts => {
+          dispatch(setUser(opts.data()));
+        });
         setIsLogged(true);
       } else {
+        dispatch(clearUser());
         setIsLogged(false);
       }
       setIsCalculated(true);
     });
   }
 
-  detectUser();
+  useEffect(() => {
+    detectUser();
+  }, [])
+
 
   if (isLogged) {
   return (
@@ -43,9 +58,10 @@ const Main = () => {
           <Route path="/test">
             <Test />
           </Route>
+          {userState.role === 'admin' ? 
           <Route path="/admin">
             <AdminPanel />
-          </Route>
+          </Route> : null}
         </Switch> 
         </>
         );

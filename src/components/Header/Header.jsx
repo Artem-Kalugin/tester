@@ -4,8 +4,9 @@ import { Button, Menu, Dropdown } from 'antd';
 import logo from '../../assets/logo192.png';
 import { UserOutlined } from '@ant-design/icons';
 import { Link, useLocation } from 'react-router-dom';
-import firebase from "firebase/app";
-import "firebase/auth";
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import { useSelector } from 'react-redux';
 
 const profileDropdown = (
   <Menu>
@@ -13,9 +14,12 @@ const profileDropdown = (
       <a>Настройки</a>
     </Menu.Item>
     <Menu.Item>
-      <a onClick={async () => {
-        await firebase.auth().signOut();
-      }}>Выйти из профиля</a>
+      <a
+        onClick={async () => {
+          await firebase.auth().signOut();
+        }}>
+        Выйти из профиля
+      </a>
     </Menu.Item>
   </Menu>
 );
@@ -23,6 +27,7 @@ const profileDropdown = (
 const Header = props => {
   const [selected, setSelected] = useState('1');
   const { pathname } = useLocation();
+  const userState = useSelector(store => store);
   const parentPage = pathname.split('/')[1] || '/';
 
   return (
@@ -43,17 +48,18 @@ const Header = props => {
         <Menu.Item key="tests">
           <Link to="/tests">Тесты</Link>
         </Menu.Item>
-        <Menu.Item key="admin">
-          <Link to="/admin">Админ Панель</Link>
-        </Menu.Item>
+        {userState.role === 'admin' ? (
+          <Menu.Item key="admin">
+            <Link to="/admin">Админ Панель</Link>
+          </Menu.Item>
+        ) : null}
       </Menu>
       <Dropdown
         className={s.profile}
         overlay={profileDropdown}
         placement="bottomLeft">
         <Button type={'text'} icon={<UserOutlined />}>
-          {' '}
-          Профиль
+          {userState.name} {userState.lastName}
         </Button>
       </Dropdown>
     </div>

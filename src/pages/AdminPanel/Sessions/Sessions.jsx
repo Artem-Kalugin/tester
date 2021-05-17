@@ -1,5 +1,5 @@
 import React from 'react';
-import s from './ActiveSessions.module.scss';
+import s from './Sessions.module.scss';
 import { Typography, Table } from 'antd';
 import moment from 'moment';
 
@@ -89,12 +89,17 @@ const columns = [
       );
     },
   },
+  {
+    title: 'Всего проходят',
+    dataIndex: 'studentsAmount',
+    key: 'studentsAmount',
+  },
 ];
 
-const ActiveSessions = props => {
+const Sessions = props => {
   return (
     <div className={`${s.wrapper}`}>
-      <Typography.Title level={2}>Активные сессии</Typography.Title>
+      <Typography.Title level={2}>Просмотр сессий</Typography.Title>
       <Table
         columns={columns}
         dataSource={props.sessions}
@@ -104,4 +109,4 @@ const ActiveSessions = props => {
   );
 };
 
-export default ActiveSessions;
+export default Sessions;

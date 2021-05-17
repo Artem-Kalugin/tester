@@ -37,7 +37,6 @@ const AddSession = props => {
                 onFinish={params => props.addSession(params)}
                 initialValues={{
                   attemptTime: moment('01:00', 'HH:mm'),
-                  attempts: 1,
                 }}
                 requiredMark={false}>
                 <Form.Item
@@ -57,11 +56,6 @@ const AddSession = props => {
                       : null}
                   </Select>
                 </Form.Item>
-
-                <Form.Item name="attempts" label="Попытки">
-                  <InputNumber min={1} />
-                </Form.Item>
-
                 <Form.Item
                   label="Группы"
                   name="groups"
@@ -98,7 +92,7 @@ const AddSession = props => {
                   />
                 </Form.Item>
                 <Form.Item
-                  label="Время попытки"
+                  label="Ограничение времени"
                   name="attemptTime"
                   rules={[
                     {

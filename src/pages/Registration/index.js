@@ -55,6 +55,10 @@ const RegistrationContainer = props => {
               email: email,
               role: 'student',
             })
+            const incrementGroup = await db.collection("groups").where('group', '==', data.group).limit(1).get();
+            await incrementGroup.docs[0].ref.update({
+              studentAmount: firebase.firestore.FieldValue.increment(1),
+            })
             await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
               firebase.auth().signInWithEmailAndPassword(email, password);
             });

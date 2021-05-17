@@ -17,7 +17,7 @@ const AdminSidebar = props => {
         <SubMenu key="sub1" icon={<UnorderedListOutlined />} title="Тесты">
           <Menu.ItemGroup key="g1" title="Сессии">
             <Menu.Item key="1">
-              <Link to={`${props.matchUrl}`}>Активные сессии</Link>
+              <Link to={`${props.matchUrl}`}>Просмотр сессии</Link>
             </Menu.Item>
             <Menu.Item key="2">
               <Link to={`${props.matchUrl}/add-session`}>

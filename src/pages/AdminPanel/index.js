@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouteMatch, Switch, Route } from 'react-router';
-import ActiveSessions from './ActiveSessions';
+import Sessions from './Sessions';
 import AddSession from './AddSession';
 import AdminSidebar from './AdminSidebar';
 import AddTest from './AddTest';
@@ -29,10 +29,10 @@ const AdminPanelContainer = props => {
       <AddStudents />
     </Route>
     <Route path="/active-sessions">
-      <ActiveSessions />
+      <Sessions />
     </Route>
     <Route path="/">
-      <ActiveSessions />
+      <Sessions />
     </Route>
   </Switch>
   </div>

@@ -58,13 +58,11 @@ const AddSessionContainer = props => {
     setGroups();
     try {
       await db.collection("groups").get().then((querySnapshot) => {
-      
         const parsed = [];
         querySnapshot.forEach((doc) => {
-          console.log(doc.data);
             parsed.push({
               uid: doc.id,
-              group: doc.data().group,
+              ...doc.data()
             });
         });
         setGroups(parsed);

@@ -7,23 +7,38 @@ import {
   MenuOutlined,
   FieldTimeOutlined,
 } from '@ant-design/icons';
+import moment from 'moment';
+
+const addZero = value => {
+  if (value < 10) return '0' + value;
+  return value;
+};
 
 const Test = props => {
   return (
     <div className={`${s.wrapper}`}>
       <div className={s.testWrapper}>
         <div className={`${s.testContainer} shadow-small`}>
-          <LeftOutlined className={s.iconSmall} />
+          <LeftOutlined
+            onClick={props.previousQuestion}
+            className={`${s.iconSmall} ${
+              props.questionIndex ? '' : s.iconDisabled
+            }`}
+          />
           <div className={s.testContent}>
             <div className={s.header}>
               <div className={s.title}>
                 <Typography.Title style={{ margin: 0 }} level={3}>
-                  Вопрос 1/2
+                  {props.test.name} {props.questionIndex + 1}/
+                  {props.test.questions.length}
                 </Typography.Title>
               </div>
               <div className={s.icons}>
                 <FieldTimeOutlined className={s.icon} />
-                <span>12:00</span>
+                <span>
+                  {addZero(moment.duration(props.timeLeft).minutes())}:
+                  {addZero(moment.duration(props.timeLeft).seconds())}
+                </span>
                 <MenuOutlined
                   onClick={() => props.setShowDrawer(true)}
                   className={s.icon}
@@ -32,40 +47,42 @@ const Test = props => {
             </div>
             <div className={s.main}>
               <Typography.Text>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Repellendus consectetur et maxime labore odio facilis quas
-                atque, distinctio a ipsam officiis natus fugit dolorem aut
-                similique nemo necessitatibus sed accusamus. Lorem ipsum dolor
-                sit amet, consectetur adipisicing elit. Repellendus consectetur
-                et maxime labore odio facilis quas atque, distinctio a ipsam
-                officiis natus fugit dolorem aut similique nemo necessitatibus
-                sed accusamus. Lorem ipsum dolor sit amet, consectetur
-                adipisicing elit. Repellendus consectetur et maxime labore odio
-                facilis quas atque, distinctio a ipsam officiis natus fugit
-                dolorem aut similique nemo necessitatibus sed accusamus.
+                {props.currentQuestion.question}
               </Typography.Text>
             </div>
             <div className={s.answers}>
-              <Radio>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Repellendus consectetur et maxime labore odio facilis quas
-                atque, distinctio a ipsam officiis natus fugit dolorem aut
-                similique nemo necessitatibus sed accusamus.
-              </Radio>
-              <Radio>1</Radio>
-              <Radio>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Repellendus consectetur et maxime labore odio facilis quas
-                atque, distinctio a ipsam officiis natus fugit dolorem aut
-                similique nemo necessitatibus sed accusamus.
-              </Radio>
-              <Radio>1</Radio>
+              {props?.currentQuestion?.answers?.length
+                ? props.currentQuestion.answers.map((el, index) => {
+                    let checked = props.currentQuestion?.answer === '' + index;
+                    if (!checked && Array.isArray(props.currentQuestion.answer))
+                      checked = props.currentQuestion?.answer?.includes(
+                        '' + index,
+                      );
+                    return (
+                      <Radio
+                        key={index}
+                        checked={checked}
+                        onClick={() =>
+                          props.markAnswer(props.currentQuestion, '' + index)
+                        }>
+                        {el.answer}
+                      </Radio>
+                    );
+                  })
+                : null}
             </div>
             <div className={s.footer}>
               <Button type="primary">Ответить</Button>
             </div>
           </div>
-          <RightOutlined className={s.iconSmall} />
+          <RightOutlined
+            onClick={props.nextQuestion}
+            className={`${s.iconSmall} ${
+              props.questionIndex === props.test.questions.length - 1
+                ? s.iconDisabled
+                : ''
+            }`}
+          />
         </div>
       </div>
       <Drawer
@@ -77,77 +94,26 @@ const Test = props => {
         visible={props.showDrawer}>
         <div>
           <Space wrap={true} size={3}>
-            <Tag>1</Tag>
-            <Tag color="processing">2</Tag>
-            <Tag color="processing">3</Tag>
-            <Tag color="blue-inverse">4</Tag>
-            <Tag color="default">5</Tag>
-            <Tag>1</Tag>
-            <Tag color="processing">2</Tag>
-            <Tag color="processing">3</Tag>
-            <Tag color="blue-inverse">4</Tag>
-            <Tag color="default">5</Tag>
-            <Tag>1</Tag>
-            <Tag color="processing">2</Tag>
-            <Tag color="processing">3</Tag>
-            <Tag color="blue-inverse">4</Tag>
-            <Tag color="default">5</Tag>
-            <Tag>1</Tag>
-            <Tag color="processing">2</Tag>
-            <Tag color="processing">3</Tag>
-            <Tag color="blue-inverse">4</Tag>
-            <Tag color="default">5</Tag>
-            <Tag>1</Tag>
-            <Tag color="processing">2</Tag>
-            <Tag color="processing">3</Tag>
-            <Tag color="blue-inverse">4</Tag>
-            <Tag color="default">5</Tag>
-            <Tag>1</Tag>
-            <Tag color="processing">2</Tag>
-            <Tag color="processing">3</Tag>
-            <Tag color="blue-inverse">4</Tag>
-            <Tag color="default">5</Tag>
-            <Tag>1</Tag>
-            <Tag color="processing">2</Tag>
-            <Tag color="processing">3</Tag>
-            <Tag color="blue-inverse">4</Tag>
-            <Tag color="default">5</Tag>
-            <Tag>1</Tag>
-            <Tag color="processing">2</Tag>
-            <Tag color="processing">3</Tag>
-            <Tag color="blue-inverse">4</Tag>
-            <Tag color="default">5</Tag>
-            <Tag>1</Tag>
-            <Tag color="processing">2</Tag>
-            <Tag color="processing">3</Tag>
-            <Tag color="blue-inverse">4</Tag>
-            <Tag color="default">5</Tag>
-            <Tag>1</Tag>
-            <Tag color="processing">2</Tag>
-            <Tag color="processing">3</Tag>
-            <Tag color="blue-inverse">4</Tag>
-            <Tag color="default">5</Tag>
-            <Tag>1</Tag>
-            <Tag color="processing">2</Tag>
-            <Tag color="processing">3</Tag>
-            <Tag color="blue-inverse">4</Tag>
-            <Tag color="default">5</Tag>
-            <Tag>1</Tag>
-            <Tag color="processing">2</Tag>
-            <Tag color="processing">3</Tag>
-            <Tag color="blue-inverse">4</Tag>
-            <Tag color="default">5</Tag>
-            <Tag>1</Tag>
-            <Tag color="processing">2</Tag>
-            <Tag color="processing">3</Tag>
-            <Tag color="blue-inverse">4</Tag>
-            <Tag color="default">5</Tag>
-            <Tag>1</Tag>
-            <Tag color="processing">2</Tag>
-            <Tag color="processing">3</Tag>
-            <Tag color="blue-inverse">4</Tag>
-            <Tag color="default">5</Tag>
-            <Tag>1</Tag>
+            {props.test?.questions?.length
+              ? props.test.questions.map((el, index) => {
+                  const isPassed = el.answer?.length;
+                  const isCurrent = index === props.questionIndex;
+                  const color = isCurrent
+                    ? 'blue-inverse'
+                    : isPassed
+                    ? 'processing'
+                    : 'default';
+                  return (
+                    <Tag
+                      key={el.index}
+                      className={s.tag}
+                      onClick={() => props.setCurrentQuestion(index)}
+                      color={color}>
+                      {index + 1}
+                    </Tag>
+                  );
+                })
+              : null}
           </Space>
         </div>
       </Drawer>
