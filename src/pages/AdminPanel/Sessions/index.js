@@ -9,6 +9,8 @@ const ActiveSessionsContainer = props => {
   const [fetched, setFetched] = useState(false);
   const [groups, setGroups] = useState(false);
   const [sessions, setSessions] = useState();
+  const [showDetails, setShowDetails] = useState(false);
+  const [details, setDetails] = useState([]);
   const db = firebase.firestore();
 
   const getGroups = async () => {
@@ -29,6 +31,11 @@ const ActiveSessionsContainer = props => {
     }
   }
 
+  const showModal = (details) => {
+    setDetails(details);
+    setShowDetails(true);
+  }
+
   const formatSessions = async (groupsParsed = groups) => {
     setSessions(old => old.map(el => {
       const amount = el.groups.reduce((acc, x) => {
@@ -42,10 +49,20 @@ const ActiveSessionsContainer = props => {
   const getSessions = async () => {
     setFetched(false);
     try {
+      const _result = [];
       const _sessions = await db.collection("sessions").get();
-      const _result = _sessions.docs.map((doc) => {
-        return doc.data();
-      })
+      for (const session of _sessions.docs) {
+        const doc = await session.ref.collection('attempts').get();
+        let attempts = [];
+        let attemptsLength = 0;
+        if (!doc.empty) {
+          attempts = doc.docs.map(el => { 
+            return { ...el.data(), studentId: el.id}
+          });
+          attemptsLength = attempts.length;
+        }
+        _result.push({...session.data(), attemptsLength: attemptsLength, attempts: attempts})
+      }
       setSessions(_result);
       getGroups();
     } catch (e) {
@@ -58,7 +75,7 @@ const ActiveSessionsContainer = props => {
   }, [])
 
   return (
-    <ActiveSessions sessions={sessions} {...props} />
+    <ActiveSessions showDetails={showDetails} setShowDetails={setShowDetails} showModal={showModal} sessions={sessions} {...props} />
   );
 };
 

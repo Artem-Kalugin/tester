@@ -53,17 +53,12 @@ const Test = props => {
             <div className={s.answers}>
               {props?.currentQuestion?.answers?.length
                 ? props.currentQuestion.answers.map((el, index) => {
-                    let checked = props.currentQuestion?.answer === '' + index;
-                    if (!checked && Array.isArray(props.currentQuestion.answer))
-                      checked = props.currentQuestion?.answer?.includes(
-                        '' + index,
-                      );
                     return (
                       <Radio
                         key={index}
-                        checked={checked}
+                        checked={el.selected}
                         onClick={() =>
-                          props.markAnswer(props.currentQuestion, '' + index)
+                          props.markAnswer(props.currentQuestion, el, index)
                         }>
                         {el.answer}
                       </Radio>
@@ -72,7 +67,29 @@ const Test = props => {
                 : null}
             </div>
             <div className={s.footer}>
-              <Button type="primary">Ответить</Button>
+              {props.questionIndex === props.test.questions.length - 1 ? (
+                <Button
+                  disabled={
+                    !props.test.questions
+                      .map(el => el.answers.some(el => el.selected))
+                      .flat()
+                      .every(el => el)
+                  }
+                  onClick={props.sendResults}
+                  type="secondary">
+                  Отправить результаты
+                </Button>
+              ) : (
+                <Button
+                  onClick={props.nextQuestion}
+                  disabled={
+                    !props.currentQuestion.answers.filter(el => el.selected)
+                      .length
+                  }
+                  type="primary">
+                  Ответить
+                </Button>
+              )}
             </div>
           </div>
           <RightOutlined
@@ -96,7 +113,7 @@ const Test = props => {
           <Space wrap={true} size={3}>
             {props.test?.questions?.length
               ? props.test.questions.map((el, index) => {
-                  const isPassed = el.answer?.length;
+                  const isPassed = el.answers.some(el => el.selected);
                   const isCurrent = index === props.questionIndex;
                   const color = isCurrent
                     ? 'blue-inverse'

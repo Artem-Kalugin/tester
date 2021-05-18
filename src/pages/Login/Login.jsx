@@ -45,10 +45,6 @@ const Login = props => {
             />
           </Form.Item>
 
-          <Form.Item name="remember" valuePropName="checked">
-            <Checkbox>Запомнить меня</Checkbox>
-          </Form.Item>
-
           <Form.Item>
             <Space direction="horizontal">
               <Button

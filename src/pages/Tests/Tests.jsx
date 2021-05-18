@@ -19,7 +19,13 @@ const Tests = props => {
           props.data.map((el, index) => {
             console.log(el);
             return (
-              <Card key={index} hoverable className={s.card} title={el.title}>
+              <Card
+                key={index}
+                hoverable={typeof el.score === 'undefined'}
+                className={`${s.card} + ${
+                  typeof el.score !== 'undefined' ? s.passed : ''
+                }`}
+                title={el.title}>
                 <Space direction={'vertical'}>
                   <Space>
                     <QuestionOutlined />
@@ -29,17 +35,28 @@ const Tests = props => {
                     <ClockCircleOutlined />
                     <Text>Ограничение: {el.timeLimit}</Text>
                   </Space>
-                  <Space>
-                    <CalendarOutlined />
-                    <Text>Доступно до: {el.date}</Text>
-                  </Space>
-                  <Button
-                    onClick={() => props.doTest(el.test, el.limit)}
-                    className={s.button}
-                    shape={'round'}
-                    type={'primary'}>
-                    Пройти
-                  </Button>
+
+                  {typeof el.score === 'undefined' ? (
+                    <>
+                      <Space>
+                        <CalendarOutlined />
+                        <Text>Доступно до: {el.date}</Text>
+                      </Space>
+                      <Button
+                        onClick={() =>
+                          props.doTest(el.test, el.limit, el.sessionId)
+                        }
+                        className={s.button}
+                        shape={'round'}
+                        type={'primary'}>
+                        Пройти
+                      </Button>
+                    </>
+                  ) : (
+                    <Space>
+                      <Text>Пройдено: {el.score}%</Text>
+                    </Space>
+                  )}
                 </Space>
               </Card>
             );

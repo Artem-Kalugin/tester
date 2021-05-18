@@ -5,6 +5,8 @@ import firebase from 'firebase';
 import 'firebase/firestore';
 import moment from 'moment';
 import 'moment/locale/ru';
+import { message, Modal } from 'antd';
+import { ExclamationCircleOutlined} from '@ant-design/icons';
 import { useHistory } from 'react-router';
 
 moment.locale('ru');
@@ -33,13 +35,27 @@ const TestsContainer = props => {
   const getSessions = async () => {
     try {
       if (userState?.group) { 
+        const currentTime = await firebase.firestore.Timestamp.now();
         const studentSessions = await db.collection('sessions').where('groups', 'array-contains', userState.group).get();
-        const mappedSessions = studentSessions.docs.map(el => el.data());
+        const mappedSessions = [];
+        for (const el of studentSessions.docs) {
+          const doc = await el.ref.collection('attempts').doc(userState.uid).get();
+
+          let score;
+          if (doc.exists) {
+            score = doc.data().score;
+          }
+          const sessionData = el.data();
+          if (moment(moment(currentTime.seconds*1000)).isAfter(sessionData.date) && !score) {
+            score = 0.0;
+          }
+          mappedSessions.push({...el.data(), sessionId: el.id, score: score });
+        }
         setSessions(mappedSessions);
         getTests(mappedSessions);
       }
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
   }
 
@@ -51,16 +67,36 @@ const TestsContainer = props => {
       setTests(mappedTests);
       setData(formatData(sessions, mappedTests));
     } catch (e) {
-      console.log(e);
+      // console.log(e);
+    }
+  }
+
+  const registerAttempt = async (test, limit, sessionId) => {
+    try {
+      message.loading({content:'Подождите, идет загрузка', key: 'wait'});
+      await db.collection('sessions').doc(sessionId).collection('attempts').doc(userState.uid).set({score: 0});
+      history.push({
+        pathname: '/test',
+        state: {test: test, limit: limit, sessionId: sessionId}
+      })
+      message.destroy('wait');
+    } catch (e) {
+      message.error({content:'Что-то пошло не так, попробуйте еще раз', key: 'wait'});
     }
   }
   
-  const doTest = (test, limit) => {
-    console.log(Date.now());
-    history.push({
-      pathname: '/test',
-      state: {test: test, limit: limit}
-    })
+  const doTest = (test, limit, sessionId) => {
+    Modal.confirm({
+      title: 'Внимание',
+      icon: <ExclamationCircleOutlined />,
+      content: 'У вас будет всего одна попытка для прохождения данного теста. Не закрывайте вкладку с тестом до тех пор, пока не отправите ответ, иначе результат не сохранится а возможность прохождения теста заблокируется.',
+      okText: 'Начать',
+      cancelText: 'Назад',
+      onOk() {
+        registerAttempt(test, limit, sessionId);
+      },
+    });
+    
   }
 
   const formatData = (_sessions = sessions, _tests = tests) => {
@@ -70,11 +106,12 @@ const TestsContainer = props => {
       const hoursLimit = date.format('HH');
       const minsLimit = date.format('mm');
       const title = test.name;
-      console.log(moment(el.date).format('DD MMMM HH:mm'));
       const questionAmount = test.questions.length;
       const hoursFormat = +hoursLimit ? `${+hoursLimit} ${prettyCountyWord(+hoursLimit, 'час', 'часа', 'часов')}` : '';
       const minsFormat = +minsLimit ? `${minsLimit} ${prettyCountyWord(minsLimit, 'минута', 'минут', 'минут')}` : '';
       return {
+        score: el.score,
+        sessionId: el.sessionId,
         limit: hoursLimit * 3600 * 1000 + +minsLimit * 60 * 1000,
         test: test,
         title: title,
