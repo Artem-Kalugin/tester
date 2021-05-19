@@ -33,6 +33,9 @@ const TestContainer = props => {
     setCurrQuestion(old => old < (testLength - 1) ? old + 1 : old);
   }
 
+  console.log(moment.duration(location?.state?.limit).hours() * 60);
+      console.log(location?.state?.limit);
+
   const previousQuestion = () => {
     setCurrQuestion(old => old > 0 ? old - 1: old);
   }
@@ -44,15 +47,16 @@ const TestContainer = props => {
   const sendResults = async () => {
     try {
       message.loading({ content: 'Отправка результатов', key: 'send-res'})
+      const minutesHave = moment.duration(location?.state?.limit).hours() * 60 + moment.duration(location?.state?.limit).minutes();
+      const minutesLeft = moment.duration(timeLeft).hours() * 60 + moment.duration(timeLeft).minutes();
       const score = (test.questions.map(el => el.answers.every(item => item.isRight === item.selected)).filter(el => el).length / testLength * 100).toFixed(1);
-      const _timeLeft = addZero(moment.duration(timeLeft).minutes()) + ':' + addZero(moment.duration(timeLeft).seconds());
-      const result = {...test, score: score, timeLeft: _timeLeft}
+      const elapsedTime = +minutesHave - +minutesLeft + ':' + addZero(+moment.duration(location?.state?.limit).seconds() || 60 - +moment.duration(timeLeft).seconds());
+      console.log(elapsedTime);
+      const result = {...test, score: score, elapsedTime: elapsedTime, name: userState.name, group: userState.group, lastName: userState.lastName }
       await db.collection('sessions').doc(sessionId).collection('attempts').doc(userState.uid).set(result);
       message.success({ content: 'Результаты успешно отправлены', key: 'send-res'})
       history.push('/tests');
-      
     } catch (e) {
-      console.log(e);
       message.error({ content: 'Ошибка.', key: 'send-res'})
     }
   }

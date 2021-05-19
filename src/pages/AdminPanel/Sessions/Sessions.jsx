@@ -1,7 +1,7 @@
 import React from 'react';
 import s from './Sessions.module.scss';
-import { Typography, Table, Modal } from 'antd';
-import { EyeOutlined } from '@ant-design/icons';
+import { Typography, Table, Modal, Tooltip } from 'antd';
+import { EyeOutlined, MailOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
 export const prettyCountyWord = (counter, oneWord, noWord, aLotOfWord) => {
@@ -124,6 +124,45 @@ const Sessions = props => {
     },
   ];
 
+  const details = [
+    {
+      title: 'Группа',
+      dataIndex: 'group',
+      key: 'group',
+    },
+    {
+      title: 'Имя',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Фамилия',
+      dataIndex: 'lastName',
+      key: 'lastName',
+    },
+    {
+      title: 'Затраченное время',
+      dataIndex: 'elapsedTime',
+      key: 'elapsedTime',
+    },
+    {
+      title: 'Набранный процент',
+      dataIndex: 'score',
+      key: 'score',
+    },
+    {
+      dataIndex: 'questions',
+      key: 'questions',
+      render: score => {
+        return (
+          <Tooltip title="Получить результат прохождения на почту">
+            <MailOutlined />
+          </Tooltip>
+        );
+      },
+    },
+  ];
+
   if (props.sessions?.length) {
     data = [...props.sessions];
     data.sort((a, b) => {
@@ -137,13 +176,16 @@ const Sessions = props => {
   return (
     <div className={`${s.wrapper}`}>
       <Modal
-        title="Basic Modal"
+        title="Детализация"
         visible={props.showDetails}
+        width={1000}
         onOk={() => props.setShowDetails(false)}
         onCancel={() => props.setShowDetails(false)}>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        <Table
+          columns={details}
+          dataSource={props.details}
+          className={s.table}
+        />
       </Modal>
       <Typography.Title level={2}>Просмотр сессий</Typography.Title>
       <Table columns={columns} dataSource={data} className={s.table} />

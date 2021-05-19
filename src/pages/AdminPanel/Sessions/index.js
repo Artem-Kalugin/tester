@@ -75,7 +75,7 @@ const ActiveSessionsContainer = props => {
   }, [])
 
   return (
-    <ActiveSessions showDetails={showDetails} setShowDetails={setShowDetails} showModal={showModal} sessions={sessions} {...props} />
+    <ActiveSessions details={details} showDetails={showDetails} setShowDetails={setShowDetails} showModal={showModal} sessions={sessions} {...props} />
   );
 };
 
