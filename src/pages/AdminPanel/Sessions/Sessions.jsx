@@ -161,6 +161,7 @@ const Sessions = props => {
         );
       },
     },
+    
   ];
 
   if (props.sessions?.length) {
