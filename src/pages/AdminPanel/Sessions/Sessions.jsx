@@ -1,8 +1,14 @@
 import React from 'react';
 import s from './Sessions.module.scss';
 import { Typography, Table, Modal, Tooltip } from 'antd';
-import { EyeOutlined, MailOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
+import {
+  EyeOutlined,
+  MailOutlined,
+  UnorderedListOutlined,
+} from '@ant-design/icons';
 import moment from 'moment';
+import { EmaiQuestions } from '../../../components';
 
 export const prettyCountyWord = (counter, oneWord, noWord, aLotOfWord) => {
   if (counter % 10 === 1 && counter !== 11) {
@@ -153,15 +159,25 @@ const Sessions = props => {
     {
       dataIndex: 'questions',
       key: 'questions',
-      render: score => {
+      render: (score, obj) => {
         return (
-          <Tooltip title="Получить результат прохождения на почту">
-            <MailOutlined />
-          </Tooltip>
+          <>
+            <Tooltip title="Получить результат прохождения на почту">
+              <MailOutlined
+                style={{ color: 'black', fontSize: '18px' }}
+                onClick={() => props.email(obj)}
+              />
+            </Tooltip>{' '}
+            <Tooltip title="Просмотр">
+              <UnorderedListOutlined
+                onClick={() => props.showResultsModal(obj)}
+                style={{ color: 'black', fontSize: '18px' }}
+              />
+            </Tooltip>
+          </>
         );
       },
     },
-    
   ];
 
   if (props.sessions?.length) {
@@ -176,6 +192,14 @@ const Sessions = props => {
   }
   return (
     <div className={`${s.wrapper}`}>
+      <Modal
+        title="Результаты теста"
+        visible={props.showResults}
+        width={1000}
+        onOk={() => props.setShowResults(false)}
+        onCancel={() => props.setShowResults(false)}>
+        <EmaiQuestions obj={props.results} />
+      </Modal>
       <Modal
         title="Детализация"
         visible={props.showDetails}

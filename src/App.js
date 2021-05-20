@@ -1,6 +1,6 @@
 import './App.css';
 import { Header } from './components';
-import { AdminPanel, Welcoming, Tests, Login, Registration, Test } from './pages';
+import { AdminPanel, Welcoming, Tests, Login, Registration, Test, TestResults } from './pages';
 import {
   Switch,
   Route,
@@ -13,7 +13,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser, setUser } from './store/user-reducer';
 import moment from 'moment';
-import sendEmail from './utils/sendEmail';
+
 
 moment.locale('ru');
 
@@ -23,13 +23,6 @@ const Main = () => {
   const [isLogged, setIsLogged] = useState(false);
   const dispatch = useDispatch();
   const userState = useSelector(store => store);
-
-  sendEmail({
-    name: 'Artem',
-    lastName: 'Kalugin',
-    group: '863101',
-    html: '<p>osen brat<p>',
-  })
 
   const detectUser = async () => {
     await firebase.auth().onAuthStateChanged(async function(user) {
@@ -64,6 +57,9 @@ const Main = () => {
           </Route>
           <Route path="/test">
             <Test />
+          </Route>
+          <Route path="/results">
+            <TestResults />
           </Route>
           {userState.role === 'admin' ? 
           <Route path="/admin">

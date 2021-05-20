@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import TestResults from './TestResults';
 import Test from './Test';
 import Registration from './Registration';
 import Login from './Login';
@@ -8,6 +9,7 @@ import AdminPanel from './AdminPanel';
 
 export {
   /* PLOP_INJECT_EXPORT */
+	TestResults,
 	Test,
 	Registration,
 	Login,

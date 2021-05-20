@@ -50,6 +50,11 @@ const Test = props => {
                 {props.currentQuestion.question}
               </Typography.Text>
             </div>
+            {props.currentQuestion.multiselection ? (
+              <Typography.Text>
+                Вы можете выбрать несколько вариантов ответа.
+              </Typography.Text>
+            ) : null}
             <div className={s.answers}>
               {props?.currentQuestion?.answers?.length
                 ? props.currentQuestion.answers.map((el, index) => {

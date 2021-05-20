@@ -4,13 +4,18 @@ import firebase from "firebase/app";
 import { message } from 'antd';
 import "firebase/auth";
 import "firebase/firestore";
+import sendEmail from '../../../utils/sendEmail';
+import ReactDOMServer from 'react-dom/server';
+import EmaiQuestions from '../../../components/EmaiQuestions/EmaiQuestions';
 
 const ActiveSessionsContainer = props => {
   const [fetched, setFetched] = useState(false);
   const [groups, setGroups] = useState(false);
   const [sessions, setSessions] = useState();
   const [showDetails, setShowDetails] = useState(false);
+  const [showResults, setShowResults] = useState(false);
   const [details, setDetails] = useState([]);
+  const [results, setResults] = useState({});
   const db = firebase.firestore();
 
   const getGroups = async () => {
@@ -31,9 +36,32 @@ const ActiveSessionsContainer = props => {
     }
   }
 
+  const email = async (obj) => {
+    try {
+      message.loading({ content: 'Загрузка', key: 'send-mail' });
+      await sendEmail({
+        name: obj.name,
+        group: obj.group,
+        lastName: obj.lastName,
+        html: ReactDOMServer.renderToStaticMarkup(
+          <EmaiQuestions emailing={true} obj={obj} />
+        )
+      })
+      message.success({ content: 'Письмо отправлено', key: 'send-mail' });
+    } catch (e) {
+      console.log(e);
+      message.error({ content: 'Произошла ошибка при отправлении письма', key: 'send-mail' });
+    }
+  }
+
   const showModal = (details) => {
     setDetails(details);
     setShowDetails(true);
+  }
+
+  const showResultsModal = (res) => {
+    setResults(res);
+    setShowResults(true);
   }
 
   const formatSessions = async (groupsParsed = groups) => {
@@ -75,7 +103,7 @@ const ActiveSessionsContainer = props => {
   }, [])
 
   return (
-    <ActiveSessions details={details} showDetails={showDetails} setShowDetails={setShowDetails} showModal={showModal} sessions={sessions} {...props} />
+    <ActiveSessions results={results} showResults={showResults} setShowResults={setShowResults} showResultsModal={showResultsModal} details={details} email={email} showDetails={showDetails} setShowDetails={setShowDetails} showModal={showModal} sessions={sessions} {...props} />
   );
 };
 
