@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import ActiveSessions from './Sessions';
 import firebase from "firebase/app";
-import { message } from 'antd';
+import { message, Modal } from 'antd';
 import "firebase/auth";
 import "firebase/firestore";
 import sendEmail from '../../../utils/sendEmail';
 import ReactDOMServer from 'react-dom/server';
 import EmaiQuestions from '../../../components/EmaiQuestions/EmaiQuestions';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 const ActiveSessionsContainer = props => {
   const [fetched, setFetched] = useState(false);
@@ -74,6 +75,30 @@ const ActiveSessionsContainer = props => {
     setFetched(true);
   }
 
+  const showDeleteModal = async (sessionId) => {
+    Modal.confirm({
+      title: 'Внимание',
+      icon: <ExclamationCircleOutlined />,
+      content: 'Удалив сессию вы очистите место в БД, но потеряете возможность просмотра результатов, вы действительно хотите продолжить?',
+      okText: 'Да',
+      cancelText: 'Нет',
+      onOk() {
+        deleteSession(sessionId);
+      },
+    });
+  }
+
+  const deleteSession = async (sessionId) => {
+    try {
+      message.loading({ content: 'Загрузка', key: 'send-mail' });
+      await db.collection("sessions").doc(sessionId).delete();
+      message.success({ content: 'Успешно', key: 'send-mail' });
+      getSessions();
+    } catch (e) {
+      message.error({ content: 'Произошла ошибка при удалении, попробуйте позже', key: 'send-mail' });
+    }
+  }
+
   const getSessions = async () => {
     setFetched(false);
     try {
@@ -89,7 +114,7 @@ const ActiveSessionsContainer = props => {
           });
           attemptsLength = attempts.length;
         }
-        _result.push({...session.data(), attemptsLength: attemptsLength, attempts: attempts})
+        _result.push({...session.data(), sessionId: session.id, attemptsLength: attemptsLength, attempts: attempts})
       }
       setSessions(_result);
       getGroups();
@@ -103,7 +128,7 @@ const ActiveSessionsContainer = props => {
   }, [])
 
   return (
-    <ActiveSessions results={results} showResults={showResults} setShowResults={setShowResults} showResultsModal={showResultsModal} details={details} email={email} showDetails={showDetails} setShowDetails={setShowDetails} showModal={showModal} sessions={sessions} {...props} />
+    <ActiveSessions fetched={fetched} showDeleteModal={showDeleteModal} results={results} showResults={showResults} setShowResults={setShowResults} showResultsModal={showResultsModal} details={details} email={email} showDetails={showDetails} setShowDetails={setShowDetails} showModal={showModal} sessions={sessions} {...props} />
   );
 };
 

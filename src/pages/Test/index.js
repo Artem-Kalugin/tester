@@ -7,6 +7,9 @@ import firebase from 'firebase';
 import 'firebase/firestore';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
+import sendEmail from '../../utils/sendEmail';
+import ReactDOMServer from 'react-dom/server';
+import EmaiQuestions from '../../components/EmaiQuestions/EmaiQuestions';
 
 const addZero = value => {
   if (value < 10) return '0' + value;
@@ -29,12 +32,8 @@ const TestContainer = props => {
   const userState = useSelector(store => store);
 
   const nextQuestion = () => {
-    console.log(test.questions[currQuestion+1].answers);
     setCurrQuestion(old => old < (testLength - 1) ? old + 1 : old);
   }
-
-  console.log(moment.duration(location?.state?.limit).hours() * 60);
-      console.log(location?.state?.limit);
 
   const previousQuestion = () => {
     setCurrQuestion(old => old > 0 ? old - 1: old);
@@ -44,20 +43,30 @@ const TestContainer = props => {
     setCurrQuestion(value);
   }
 
-  const sendResults = async () => {
+  const sendResults = async (force) => {
     try {
       message.loading({ content: 'Отправка результатов', key: 'send-res'})
       const minutesHave = moment.duration(location?.state?.limit).hours() * 60 + moment.duration(location?.state?.limit).minutes();
       const minutesLeft = moment.duration(timeLeft).hours() * 60 + moment.duration(timeLeft).minutes();
       const score = (test.questions.map(el => el.answers.every(item => item.isRight === item.selected)).filter(el => el).length / testLength * 100).toFixed(1);
       const elapsedTime = +minutesHave - +minutesLeft + ':' + addZero(+moment.duration(location?.state?.limit).seconds() || 60 - +moment.duration(timeLeft).seconds());
-      console.log(elapsedTime);
-      const result = {...test, score: score, elapsedTime: elapsedTime, name: userState.name, group: userState.group, lastName: userState.lastName }
+      const result = {...test, score: score, elapsedTime: elapsedTime, name: userState.name, group: userState.group, lastName: userState.lastName, testName: test.name};
       await db.collection('sessions').doc(sessionId).collection('attempts').doc(userState.uid).set(result);
-      message.success({ content: 'Результаты успешно отправлены', key: 'send-res'})
+      await sendEmail({
+        name: result.name,
+        group: result.group,
+        lastName: result.lastName,
+        html: ReactDOMServer.renderToStaticMarkup(
+          <EmaiQuestions emailing={true} obj={result} />
+        )
+      })
+      message.success({ content: 'Результаты успешно отправлены', key: 'send-res'});
       history.push('/tests');
     } catch (e) {
-      message.error({ content: 'Ошибка.', key: 'send-res'})
+      if (force) {
+        history.push('/tests');
+        message.error({ content: 'Время вышло.', key: 'send-res'})
+      } else message.error({ content: 'Ошибка.', key: 'send-res'})
     }
   }
 
@@ -96,7 +105,15 @@ const TestContainer = props => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimeLeft(limit - Date.now());
+      const _timeLeft = limit - Date.now();
+      if (timeLeft < _timeLeft ) {
+        setTimeLeft(0);
+        sendResults(true);
+      }
+      if (timeLeft < 0) {
+        sendResults(true);
+      }
+      setTimeLeft(_timeLeft);
     }, 500);
     return () => {
       clearInterval(interval);

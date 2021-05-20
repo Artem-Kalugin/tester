@@ -6,8 +6,9 @@ import 'firebase/firestore';
 import moment from 'moment';
 import 'moment/locale/ru';
 import { message, Modal } from 'antd';
-import { ExclamationCircleOutlined} from '@ant-design/icons';
+import { ExclamationCircleOutlined, TrophyOutlined} from '@ant-design/icons';
 import { useHistory } from 'react-router';
+
 
 moment.locale('ru');
 
@@ -29,7 +30,11 @@ const TestsContainer = props => {
   const db = firebase.firestore();
   const [sessions, setSessions] = useState();
   const [tests, setTests] = useState();
-  const [data, setData] = useState();
+  const [initialized, setInitialized] = useState(false);
+  const [activeTests, setActiveTests] = useState();
+  const [passedTests, setPassedTests] = useState();
+  const [inactiveTests, setInactiveTests] = useState();
+  const [mode, setMode] = useState('all');
   const history = useHistory();
   
   const getSessions = async () => {
@@ -42,14 +47,17 @@ const TestsContainer = props => {
           const doc = await el.ref.collection('attempts').doc(userState.uid).get();
 
           let score;
+          let isTooLate = false;
           if (doc.exists) {
             score = doc.data().score;
           }
+          
           const sessionData = el.data();
           if (moment(moment(currentTime.seconds*1000)).isAfter(sessionData.date) && !score) {
             score = 0.0;
+            isTooLate = true;
           }
-          mappedSessions.push({...el.data(), sessionId: el.id, score: score });
+          mappedSessions.push({...el.data(), sessionId: el.id, score: score, isTooLate: isTooLate });
         }
         setSessions(mappedSessions);
         getTests(mappedSessions);
@@ -65,15 +73,21 @@ const TestsContainer = props => {
       const _tests = await db.collection('tests').get();
       const mappedTests = _tests.docs.map(el => el.data());
       setTests(mappedTests);
-      setData(formatData(sessions, mappedTests));
+      formatData(sessions, mappedTests);
+      setInitialized(true);
     } catch (e) {
       // console.log(e);
     }
   }
 
-  const registerAttempt = async (test, limit, sessionId) => {
+  const registerAttempt = async (test, limit, sessionId, maxDate) => {
     try {
       message.loading({content:'Подождите, идет загрузка', key: 'wait'});
+      const currentTime = await firebase.firestore.Timestamp.now();
+      if (moment(currentTime.seconds*1000).isAfter(moment(maxDate))) {
+        message.loading({content:'Тест более недоступен', key: 'wait'});
+        history.push('/');
+      }
       await db.collection('sessions').doc(sessionId).collection('attempts').doc(userState.uid).set({score: 0});
       history.push({
         pathname: '/test',
@@ -85,7 +99,7 @@ const TestsContainer = props => {
     }
   }
   
-  const doTest = (test, limit, sessionId) => {
+  const doTest = (test, limit, sessionId, maxDate) => {
     Modal.confirm({
       title: 'Внимание',
       icon: <ExclamationCircleOutlined />,
@@ -93,14 +107,17 @@ const TestsContainer = props => {
       okText: 'Начать',
       cancelText: 'Назад',
       onOk() {
-        registerAttempt(test, limit, sessionId);
+        registerAttempt(test, limit, sessionId, maxDate);
       },
     });
     
   }
 
   const formatData = (_sessions = sessions, _tests = tests) => {
-    return _sessions.map((el) => {
+    const active = [];
+    const passed = [];
+    const inactive = [];
+    _sessions.map((el) => {
       const date = moment(el.attemptTime, 'HH:mm');
       const test = _tests.find(item => el.test === item.name);
       const hoursLimit = date.format('HH');
@@ -109,7 +126,7 @@ const TestsContainer = props => {
       const questionAmount = test.questions.length;
       const hoursFormat = +hoursLimit ? `${+hoursLimit} ${prettyCountyWord(+hoursLimit, 'час', 'часа', 'часов')}` : '';
       const minsFormat = +minsLimit ? `${minsLimit} ${prettyCountyWord(minsLimit, 'минута', 'минут', 'минут')}` : '';
-      return {
+      const testObj =  {
         score: el.score,
         sessionId: el.sessionId,
         limit: hoursLimit * 3600 * 1000 + +minsLimit * 60 * 1000,
@@ -117,9 +134,37 @@ const TestsContainer = props => {
         title: title,
         questionsAmount: questionAmount,
         timeLimit:  hoursFormat + minsFormat,
+        unformatedDate: el.date,
+        isTooLate: el.isTooLate,
         date: moment(el.date).format('DD MMMM HH:mm'),
       }
+      if (el.isTooLate) {
+        inactive.push(testObj);
+      } else if (typeof el.score !== 'undefined') {
+        passed.push(testObj);
+      } else active.push(testObj);
     })
+    setActiveTests(active.sort((a,b) => {
+      if (moment(a.unformatedDate).isAfter(moment(b.unformatedDate))) {
+        return 1;
+      } else {
+        return -1;
+      }
+    }));
+    setPassedTests(passed.sort((a,b) => {
+      if (moment(a.unformatedDate).isAfter(moment(b.unformatedDate))) {
+        return -1;
+      } else {
+        return 1;
+      }
+    }));
+    setInactiveTests(inactive.sort((a,b) => {
+      if (moment(a.unformatedDate).isAfter(moment(b.unformatedDate))) {
+        return -1;
+      } else {
+        return 1;
+      }
+    }));
   }
 
   useEffect(() => {
@@ -127,7 +172,7 @@ const TestsContainer = props => {
   }, [userState])
 
   return (
-    <Tests doTest={doTest} data={data} {...props} />
+    <Tests initialized={initialized} doTest={doTest} mode={mode} setMode={setMode} activeTests={activeTests} passedTests={passedTests} inactiveTests={inactiveTests} {...props} />
   );
 };
 

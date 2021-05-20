@@ -1,8 +1,9 @@
 import React from 'react';
 import s from './Sessions.module.scss';
-import { Typography, Table, Modal, Tooltip } from 'antd';
+import { Typography, Table, Modal, Tooltip, Spin, Space } from 'antd';
 import { Link } from 'react-router-dom';
 import {
+  CloseOutlined,
   EyeOutlined,
   MailOutlined,
   UnorderedListOutlined,
@@ -30,9 +31,19 @@ const parseTime = (seconds, timeLimit) => {
   const hours = parser.asHours();
   const minutes = parser.asMinutes();
   const limiter = moment(timeLimit, 'HH:mm');
-  if (seconds < limiter.format('HH') * 3600 + limiter.format('mm') * 60)
+  console.log(seconds < 0);
+  console.log(seconds / 1000);
+  console.log(
+    seconds / 1000 > limiter.format('HH') * 3600 + limiter.format('mm') * 60,
+  );
+  console.log(limiter.format('HH') * 3600 + limiter.format('mm') * 60);
+  if (
+    seconds < 0 &&
+    -seconds / 1000 > limiter.format('HH') * 3600 + limiter.format('mm') * 60
+  ) {
     return 'Завершен';
-  if (seconds < 0) return 'Скоро завершится';
+  }
+  if (seconds / 1000 < 0) return 'Скоро завершится';
   if (days > 7) {
     const date = Math.round(weeks);
     return date + ' ' + prettyCountyWord(date, 'неделя', 'недели', 'недель');
@@ -128,6 +139,18 @@ const Sessions = props => {
         return null;
       },
     },
+    {
+      title: 'Удаление',
+      key: 'attempts',
+      render: (attempts, obj) => {
+        return (
+          <CloseOutlined
+            onClick={() => props.showDeleteModal(obj.sessionId)}
+            style={{ color: 'blue' }}
+          />
+        );
+      },
+    },
   ];
 
   const details = [
@@ -213,7 +236,19 @@ const Sessions = props => {
         />
       </Modal>
       <Typography.Title level={2}>Просмотр сессий</Typography.Title>
-      <Table columns={columns} dataSource={data} className={s.table} />
+      {props.fetched ? (
+        <Table columns={columns} dataSource={data} className={s.table} />
+      ) : (
+        <div
+          style={{
+            display: 'flex',
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Spin />
+        </div>
+      )}{' '}
     </div>
   );
 };

@@ -5,7 +5,6 @@ import TestResults from './TestResults';
 
 const TestResultsContainer = props => {
   const location = useLocation();
-  console.log(props);
 
   return (
     <TestResults obj={location?.state?.obj} {...props} />

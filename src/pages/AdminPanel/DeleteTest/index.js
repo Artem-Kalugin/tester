@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { message } from 'antd';
+import { message, Modal } from 'antd';
 import DeleteTest from './DeleteTest';
 import firebase from "firebase/app";
 import "firebase/firestore";
+import { ExclamationCircleOutlined, ExclamationOutlined } from '@ant-design/icons';
 
 const DeleteTestContainer = props => {
   const db = firebase.firestore();
@@ -30,10 +31,27 @@ const DeleteTestContainer = props => {
     }
   }
 
+  const deleteTestModal = async (selectedTest) => {
+    Modal.confirm({
+      title: 'Внимание',
+      icon: <ExclamationCircleOutlined />,
+      content: 'Удалив тест вы так же удалите все сессии связанные с этим тестом, вы действительно хотите продолжить?',
+      okText: 'Да',
+      cancelText: 'Нет',
+      onOk() {
+        deleteTest(selectedTest);
+      },
+    });
+  }
+
   const deleteTest = async () => {
     try {
       message.loading({ content: 'Идет удаление', key : 'delete-test'});
       await db.collection("tests").doc(selectedTest).delete();
+      const sessions = await db.collection("sessions").where('testId', '==', selectedTest).get();
+      for (const ses of sessions.docs) {
+        await ses.ref.delete();
+      }
       message.success({ content: 'Успешно', key : 'delete-test'});
       getTests();
       setSelectedTest();
@@ -48,7 +66,7 @@ const DeleteTestContainer = props => {
   }, [])
 
   return (
-    <DeleteTest deleteTest={deleteTest} selectedTest={selectedTest} setSelectedTest={setSelectedTest} fetched={fetched} tests={tests} {...props} />
+    <DeleteTest deleteTest={deleteTestModal} selectedTest={selectedTest} setSelectedTest={setSelectedTest} fetched={fetched} tests={tests} {...props} />
   );
 };
 
