@@ -73,9 +73,11 @@ const ActiveSessionsContainer = props => {
     setSessions(old =>
       old.map(el => {
         const amount = el.groups.reduce((acc, x) => {
-          return (
-            acc + groupsParsed.find(item => item.group === x).studentAmount
-          );
+          const group = groupsParsed.find(item => item.group === x);
+          if (group?.studentAmount > 0) {
+            return acc + group.studentAmount;
+          }
+          return acc;
         }, 0);
         return { ...el, studentsAmount: amount };
       }),

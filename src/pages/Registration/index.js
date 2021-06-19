@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { message } from 'antd';
 import 'firebase/auth';
 import 'firebase/firestore';
+import { EyeInvisibleOutlined } from '@ant-design/icons';
 
 const RegistrationContainer = props => {
   const [data, setData] = useState(null);
@@ -70,6 +71,7 @@ const RegistrationContainer = props => {
               lastName: data.lastName,
               group: data.group,
               email: email,
+              notDeleted: true,
               role: 'student',
             });
             const incrementGroup = await db
@@ -77,20 +79,24 @@ const RegistrationContainer = props => {
               .where('group', '==', data.group)
               .limit(1)
               .get();
+            console.log('group', incrementGroup);
             await incrementGroup.docs[0].ref.update({
               studentAmount: firebase.firestore.FieldValue.increment(1),
             });
+            console.log('groups incremented');
             await firebase
               .auth()
               .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
               .then(() => {
                 firebase.auth().signInWithEmailAndPassword(email, password);
               });
+            console.log('invite', invite.docs[0].ref);
             await invite.docs[0].ref.delete();
             message.success({ content: 'Успешно', key: 'registration' });
             history.push('/');
           } catch (e) {
             console.log(e);
+            firebase.auth().currentUser.delete();
             message.error({
               content: 'Кажется, что-то пошло не так. Попробуйте позже',
               key: 'registration',

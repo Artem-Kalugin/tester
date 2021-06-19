@@ -1,0 +1,14 @@
+.wrapper {
+  display: flex;
+  flex: 1;
+  padding: 24px;
+  width: 100%;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background: var(--gs-0);
+}
+
+.table {
+  width: 100%;
+}

@@ -31,12 +31,6 @@ const parseTime = (seconds, timeLimit) => {
   const hours = parser.asHours();
   const minutes = parser.asMinutes();
   const limiter = moment(timeLimit, 'HH:mm');
-  console.log(seconds < 0);
-  console.log(seconds / 1000);
-  console.log(
-    seconds / 1000 > limiter.format('HH') * 3600 + limiter.format('mm') * 60,
-  );
-  console.log(limiter.format('HH') * 3600 + limiter.format('mm') * 60);
   if (
     seconds < 0 &&
     -seconds / 1000 > limiter.format('HH') * 3600 + limiter.format('mm') * 60

@@ -7,6 +7,7 @@ import AdminSidebar from './AdminSidebar';
 import AddTest from './AddTest';
 import DeleteTest from './DeleteTest';
 import AddStudents from './AddStudents';
+import ShowStudents from './ShowStudents';
 
 const AdminPanelContainer = props => {
   const { path, url } = useRouteMatch();
@@ -26,6 +27,9 @@ const AdminPanelContainer = props => {
         </Route>
         <Route path={`${path}/delete-test`}>
           <DeleteTest />
+        </Route>
+        <Route path={`${path}/show-students`}>
+          <ShowStudents />
         </Route>
         <Route path={`${path}/add-students`}>
           <AddStudents />

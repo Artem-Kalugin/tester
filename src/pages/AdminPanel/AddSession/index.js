@@ -54,6 +54,7 @@ const AddSessionContainer = props => {
     newParams.test = tests.find(el => el.uid === params.testId).name;
     newParams.date = params.date.format();
     newParams.attemptTime = params.attemptTime.format('HH:mm');
+    console.log(newParams);
     return newParams;
   };
 

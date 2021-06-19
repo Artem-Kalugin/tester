@@ -32,6 +32,9 @@ const TestContainer = props => {
   const db = firebase.firestore();
   const userState = useSelector(store => store);
 
+  console.log(history);
+  console.log(limit);
+
   const nextQuestion = () => {
     setCurrQuestion(old => (old < testLength - 1 ? old + 1 : old));
   };

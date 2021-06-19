@@ -35,9 +35,6 @@ const AddSession = props => {
                 layout="horizontal"
                 name="addTest"
                 onFinish={params => props.addSession(params)}
-                initialValues={{
-                  attemptTime: moment('01:00', 'HH:mm'),
-                }}
                 requiredMark={false}>
                 <Form.Item
                   label="Тест"

@@ -145,6 +145,7 @@ const TestsContainer = props => {
       const test = _tests.find(item => el.test === item.name);
       const hoursLimit = date.format('HH');
       const minsLimit = date.format('mm');
+      console.log(date, hoursLimit, minsLimit);
       const title = test.name;
       const questionAmount = test.questions.length;
       const hoursFormat = +hoursLimit
