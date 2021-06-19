@@ -1,22 +1,29 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './App.css';
 import { Header } from './components';
-import { AdminPanel, Welcoming, Tests, Login, Registration, Test, TestResults } from './pages';
+import {
+  AdminPanel,
+  Welcoming,
+  Tests,
+  Login,
+  Registration,
+  Test,
+  TestResults,
+} from './pages';
 import {
   Switch,
   Route,
   HashRouter as Router,
-  Redirect
-} from "react-router-dom";
-import firebase from "firebase/app";
-import "firebase/auth";
+  Redirect,
+} from 'react-router-dom';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser, setUser } from './store/user-reducer';
 import moment from 'moment';
 
-
 moment.locale('ru');
-
 
 const Main = () => {
   const [isCalculated, setIsCalculated] = useState(false);
@@ -25,11 +32,16 @@ const Main = () => {
   const userState = useSelector(store => store);
 
   const detectUser = async () => {
-    await firebase.auth().onAuthStateChanged(async function(user) {
+    await firebase.auth().onAuthStateChanged(async function (user) {
       if (user) {
-        firebase.firestore().collection('users').doc(user.uid).get().then(opts => {
-          dispatch(setUser(opts.data()));
-        });
+        firebase
+          .firestore()
+          .collection('users')
+          .doc(user.uid)
+          .get()
+          .then(opts => {
+            dispatch(setUser(opts.data()));
+          });
         setIsLogged(true);
       } else {
         dispatch(clearUser());
@@ -37,17 +49,16 @@ const Main = () => {
       }
       setIsCalculated(true);
     });
-  }
+  };
 
   useEffect(() => {
     detectUser();
-  }, [])
-
+  }, []);
 
   if (isLogged) {
-  return (
-        <>
-        <Header />    
+    return (
+      <>
+        <Header />
         <Switch>
           <Route exact path="/">
             <Welcoming />
@@ -61,36 +72,40 @@ const Main = () => {
           <Route path="/results">
             <TestResults />
           </Route>
-          {userState.role === 'admin' ? 
-          <Route path="/admin">
-            <AdminPanel />
-          </Route> : null}
-        </Switch> 
-        </>
-        );
+          {userState.role === 'admin' ? (
+            <Route path="/admin">
+              <AdminPanel />
+            </Route>
+          ) : null}
+        </Switch>
+      </>
+    );
   } else {
-    if (isCalculated) return <Redirect to='/login' />
-    else return null;
+    if (isCalculated) {
+      return <Redirect to="/login" />;
+    } else {
+      return null;
+    }
   }
-}
+};
 function App() {
   return (
     <div>
-    <Router>
-    <div className="App">
-      <Switch>
-        <Route exact path="/login">
-          <Login />
-        </Route>
-        <Route exact path="/registration">
-          <Registration/>
-        </Route>
-        <Route path='/'>
-          <Main />
-        </Route>
-      </Switch> 
-    </div>
-    </Router>
+      <Router>
+        <div className="App">
+          <Switch>
+            <Route exact path="/login">
+              <Login />
+            </Route>
+            <Route exact path="/registration">
+              <Registration />
+            </Route>
+            <Route path="/">
+              <Main />
+            </Route>
+          </Switch>
+        </div>
+      </Router>
     </div>
   );
 }

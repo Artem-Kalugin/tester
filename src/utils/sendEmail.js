@@ -6,7 +6,7 @@ export default async function sendEmail(body) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
-    })
+    });
 
     let result = null;
     result = await res;
@@ -18,6 +18,6 @@ export default async function sendEmail(body) {
     return result;
   } catch (e) {
     console.log(e);
-    throw (e);
+    throw e;
   }
 }

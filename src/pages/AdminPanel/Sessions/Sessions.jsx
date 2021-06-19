@@ -43,7 +43,9 @@ const parseTime = (seconds, timeLimit) => {
   ) {
     return 'Завершен';
   }
-  if (seconds / 1000 < 0) return 'Скоро завершится';
+  if (seconds / 1000 < 0) {
+    return 'Скоро завершится';
+  }
   if (days > 7) {
     const date = Math.round(weeks);
     return date + ' ' + prettyCountyWord(date, 'неделя', 'недели', 'недель');

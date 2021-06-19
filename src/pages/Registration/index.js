@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Registration from './Registration';
 import { ValidateProfile } from '../../core/index';
-import firebase from "firebase/app";
+import firebase from 'firebase/app';
 import { useHistory } from 'react-router-dom';
 import { message } from 'antd';
-import "firebase/auth";
-import "firebase/firestore";
+import 'firebase/auth';
+import 'firebase/firestore';
 
 const RegistrationContainer = props => {
   const [data, setData] = useState(null);
@@ -24,8 +24,14 @@ const RegistrationContainer = props => {
   const recieve = async () => {
     setLoading(true);
     try {
-      message.loading({ content: 'Подождите, идет загрузка', key: 'invite-code' });
-      const invite = await db.collection("invites").where('inviteCode', '==', inviteCode).get();
+      message.loading({
+        content: 'Подождите, идет загрузка',
+        key: 'invite-code',
+      });
+      const invite = await db
+        .collection('invites')
+        .where('inviteCode', '==', inviteCode)
+        .get();
       const recievedData = invite.docs[0].data();
       if (!recievedData) {
         throw new Error();
@@ -33,10 +39,13 @@ const RegistrationContainer = props => {
       setData(recievedData);
       message.success({ content: 'Инвайт код найден', key: 'invite-code' });
     } catch (e) {
-      message.error({ content: 'Проверьте правильность введенного инвайт кода.', key: 'invite-code'  });
+      message.error({
+        content: 'Проверьте правильность введенного инвайт кода.',
+        key: 'invite-code',
+      });
     }
     setLoading(false);
-  }
+  };
   const register = async () => {
     setErrorMessage('');
     setLoading(true);
@@ -44,30 +53,48 @@ const RegistrationContainer = props => {
       if (ValidateProfile.email(email)) {
         if (ValidateProfile.password(password)) {
           try {
-            message.loading({ content: 'Подождите, идет загрузка', key: 'registration' });
-            const invite = await db.collection("invites").where('inviteCode', '==', inviteCode).get();
-            const { user } = await firebase.auth().createUserWithEmailAndPassword(email, password);
-            const addUser = await db.collection("users").doc(user.uid).set({
-              'name': data.name,
+            message.loading({
+              content: 'Подождите, идет загрузка',
+              key: 'registration',
+            });
+            const invite = await db
+              .collection('invites')
+              .where('inviteCode', '==', inviteCode)
+              .get();
+            const { user } = await firebase
+              .auth()
+              .createUserWithEmailAndPassword(email, password);
+            const addUser = await db.collection('users').doc(user.uid).set({
+              name: data.name,
               uid: user.uid,
               lastName: data.lastName,
               group: data.group,
               email: email,
               role: 'student',
-            })
-            const incrementGroup = await db.collection("groups").where('group', '==', data.group).limit(1).get();
+            });
+            const incrementGroup = await db
+              .collection('groups')
+              .where('group', '==', data.group)
+              .limit(1)
+              .get();
             await incrementGroup.docs[0].ref.update({
               studentAmount: firebase.firestore.FieldValue.increment(1),
-            })
-            await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
-              firebase.auth().signInWithEmailAndPassword(email, password);
             });
+            await firebase
+              .auth()
+              .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+              .then(() => {
+                firebase.auth().signInWithEmailAndPassword(email, password);
+              });
             await invite.docs[0].ref.delete();
             message.success({ content: 'Успешно', key: 'registration' });
             history.push('/');
           } catch (e) {
             console.log(e);
-            message.error({ content: 'Кажется, что-то пошло не так. Попробуйте позже', key: 'registration' });
+            message.error({
+              content: 'Кажется, что-то пошло не так. Попробуйте позже',
+              key: 'registration',
+            });
           }
         } else {
           setErrorMessage('Пароль должен содержать минимум 8 символов');
@@ -79,10 +106,24 @@ const RegistrationContainer = props => {
       setErrorMessage('Введенные пароли не совпадают');
     }
     setLoading(false);
-  }
+  };
 
   return (
-    <Registration  recieve={recieve} setInviteCode={setInviteCode} loading={loading} register={register} errorMessage={errorMessage} email={email} setEmail={setEmail} password={password} setPassword={setPassword} repeatPassword={repeatPassword} setRepeatPassword={setRepeatPassword} data={data} {...props} />
+    <Registration
+      recieve={recieve}
+      setInviteCode={setInviteCode}
+      loading={loading}
+      register={register}
+      errorMessage={errorMessage}
+      email={email}
+      setEmail={setEmail}
+      password={password}
+      setPassword={setPassword}
+      repeatPassword={repeatPassword}
+      setRepeatPassword={setRepeatPassword}
+      data={data}
+      {...props}
+    />
   );
 };
 

@@ -3,32 +3,48 @@ import s from './EmaiQuestions.module.scss';
 import { Typography, Space, Radio } from 'antd';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 
-const renderAnswer = (answer, index, emailing) => {
+const renderAnswer = (answer, index, emailing, seeResults) => {
   return (
     <div>
       {answer.isRight ? (
         emailing ? (
-          <span style={{ color: answer.selected ? 'green' : '#cccccc' }}>
+          <span
+            style={{
+              color: answer.selected || seeResults ? 'green' : '#cccccc',
+            }}>
             ✓
           </span>
         ) : (
           <CheckOutlined
-            style={{ color: answer.selected ? 'green' : '#cccccc' }}
+            style={{
+              color: answer.selected || seeResults ? 'green' : '#cccccc',
+            }}
           />
         )
       ) : emailing ? (
-        <span style={{ color: answer.selected ? 'red' : '#cccccc' }}>✕</span>
+        <span
+          style={{ color: answer.selected || seeResults ? 'red' : '#cccccc' }}>
+          ✕
+        </span>
       ) : (
-        <CloseOutlined style={{ color: answer.selected ? 'red' : '#cccccc' }} />
+        <CloseOutlined
+          style={{ color: answer.selected || seeResults ? 'red' : '#cccccc' }}
+        />
       )}{' '}
-      <Radio disabled={emailing} checked={answer.selected}>
-        {index + 1}. {answer.answer}
-      </Radio>
+      {!seeResults ? (
+        <Radio disabled={emailing} checked={answer.selected}>
+          {index + 1}. {answer.answer}
+        </Radio>
+      ) : (
+        <span>
+          {index + 1}. {answer.answer}
+        </span>
+      )}
     </div>
   );
 };
 
-const renderQuestion = (props, index, emailing) => {
+const renderQuestion = (props, index, emailing, seeResults) => {
   return (
     <div
       style={
@@ -56,14 +72,14 @@ const renderQuestion = (props, index, emailing) => {
       ) : null}
       {props.answers?.length
         ? props.answers.map((answer, index) => {
-            return renderAnswer(answer, index, emailing);
+            return renderAnswer(answer, index, emailing, seeResults);
           })
         : null}
     </div>
   );
 };
 
-const EmaiQuestions = ({ obj, emailing }) => {
+const EmaiQuestions = ({ obj, emailing, seeResults }) => {
   return (
     <div
       style={
@@ -80,7 +96,7 @@ const EmaiQuestions = ({ obj, emailing }) => {
       }
       className={`${s.wrapper}`}>
       <div className={s.title}>
-        {obj.name ? (
+        {obj.name && !seeResults ? (
           <Typography.Title style={{ margin: 0 }} level={3}>
             Тест {obj.testName} пройден {obj.name} {obj.lastName},{' '}
             {`группа ${obj.group}`}
@@ -96,7 +112,7 @@ const EmaiQuestions = ({ obj, emailing }) => {
       </div>
       {obj.questions.length
         ? obj.questions.map((question, index) => {
-            return renderQuestion(question, index, emailing);
+            return renderQuestion(question, index, emailing, seeResults);
           })
         : null}
     </div>

@@ -9,11 +9,11 @@ import AdminPanel from './AdminPanel';
 
 export {
   /* PLOP_INJECT_EXPORT */
-	TestResults,
-	Test,
-	Registration,
-	Login,
-	Tests,
-	Welcoming,
-	AdminPanel,
-}
+  TestResults,
+  Test,
+  Registration,
+  Login,
+  Tests,
+  Welcoming,
+  AdminPanel,
+};

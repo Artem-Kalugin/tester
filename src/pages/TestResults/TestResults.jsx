@@ -6,7 +6,7 @@ import { EmaiQuestions } from '../../components';
 const TestResults = props => {
   return (
     <div className={`${s.wrapper}`}>
-      {props.obj ? <EmaiQuestions obj={props.obj}></EmaiQuestions> : null}
+      {props.obj ? <EmaiQuestions obj={props.obj} /> : null}
     </div>
   );
 };

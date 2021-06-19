@@ -11,7 +11,7 @@ const Welcoming = props => {
   return (
     <div className={`${s.wrapper}`}>
       <div className={s.imageWrapper}>
-        <img src={image}></img>
+        <img src={image} />
       </div>
       {/* <EmaiQuestions
         obj={JSON.parse(

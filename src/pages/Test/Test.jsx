@@ -10,7 +10,9 @@ import {
 import moment from 'moment';
 
 const addZero = value => {
-  if (value < 10) return '0' + value;
+  if (value < 10) {
+    return '0' + value;
+  }
   return value;
 };
 

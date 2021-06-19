@@ -4,6 +4,6 @@ import Header from './Header';
 
 export {
   /* PLOP_INJECT_EXPORT */
-	EmaiQuestions,
-	Header,
-}
+  EmaiQuestions,
+  Header,
+};

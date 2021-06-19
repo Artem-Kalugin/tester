@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AddSession from './AddSession';
-import firebase from "firebase/app";
-import "firebase/firestore";
+import firebase from 'firebase/app';
+import 'firebase/firestore';
 import { message } from 'antd';
 
 const AddSessionContainer = props => {
@@ -16,70 +16,83 @@ const AddSessionContainer = props => {
     setTestsFetched(false);
     setTests();
     try {
-      await db.collection("tests").get().then((querySnapshot) => {
-        const parsed = [];
-        querySnapshot.forEach((doc) => {
+      await db
+        .collection('tests')
+        .get()
+        .then(querySnapshot => {
+          const parsed = [];
+          querySnapshot.forEach(doc => {
             parsed.push({
               uid: doc.id,
               name: doc.data().name,
             });
+          });
+          setTests(parsed);
         });
-        setTests(parsed);
-      });
-      setTestsFetched(true)
-    } catch {
-      
-    }
-  }
+      setTestsFetched(true);
+    } catch {}
+  };
 
-  const addSession = async (params) => {
+  const addSession = async params => {
     setLoading(true);
     try {
-      message.loading({ content: 'Loading', key: 'add-session'})
+      message.loading({ content: 'Loading', key: 'add-session' });
       await db.collection('sessions').doc().set(formatParams(params));
-      message.success({ content: 'Успешно', key: 'add-session'})
-    } catch(e) {
+      message.success({ content: 'Успешно', key: 'add-session' });
+    } catch (e) {
       console.log(e);
-      message.error({ content: 'Кажется, что-то пошло не так. Попробуйте позже.', key: 'add-session'})
+      message.error({
+        content: 'Кажется, что-то пошло не так. Попробуйте позже.',
+        key: 'add-session',
+      });
     }
     setLoading(false);
-  }
+  };
 
-  const formatParams = (params) => {
-    const newParams = {...params};
+  const formatParams = params => {
+    const newParams = { ...params };
     newParams.test = tests.find(el => el.uid === params.testId).name;
     newParams.date = params.date.format();
     newParams.attemptTime = params.attemptTime.format('HH:mm');
     return newParams;
-  }
+  };
 
   const getGroups = async () => {
     setGroupsFetched(false);
     setGroups();
     try {
-      await db.collection("groups").get().then((querySnapshot) => {
-        const parsed = [];
-        querySnapshot.forEach((doc) => {
+      await db
+        .collection('groups')
+        .get()
+        .then(querySnapshot => {
+          const parsed = [];
+          querySnapshot.forEach(doc => {
             parsed.push({
               uid: doc.id,
-              ...doc.data()
+              ...doc.data(),
             });
+          });
+          setGroups(parsed);
         });
-        setGroups(parsed);
-      });
-      setGroupsFetched(true)
-    } catch {
-      
-    }
-  }
+      setGroupsFetched(true);
+    } catch {}
+  };
 
   useEffect(() => {
     getGroups();
     getTests();
-  },[])
+  }, []);
 
   return (
-    <AddSession loading={loading} addSession={addSession} groups={groups} tests={tests} groupsFetched={groupsFetched} testsFetched={testsFetched} {...props} />
+    <AddSession
+      loading={loading}
+      addSession={addSession}
+      groups={groups}
+      tests={tests}
+      groupsFetched={groupsFetched}
+      testsFetched={testsFetched}
+      {...props}
+    />
   );
 };
 

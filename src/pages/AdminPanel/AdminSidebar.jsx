@@ -27,16 +27,21 @@ const AdminSidebar = props => {
           </Menu.ItemGroup>
           <Menu.ItemGroup key="g2" title="Тесты">
             <Menu.Item key="3">
-              <Link to={`${props.matchUrl}/add-test`}>Новый тест</Link>
+              <Link to={`${props.matchUrl}/show-test`}>Просмотр тестов</Link>
             </Menu.Item>
             <Menu.Item key="4">
+              <Link to={`${props.matchUrl}/add-test`}>Новый тест</Link>
+            </Menu.Item>
+            <Menu.Item key="5">
               <Link to={`${props.matchUrl}/delete-test`}>Удаление теста</Link>
             </Menu.Item>
           </Menu.ItemGroup>
         </SubMenu>
         <SubMenu key="sub2" icon={<TeamOutlined />} title="Студенты">
-          <Menu.Item key="5">Просмотр</Menu.Item>
           <Menu.Item key="6">
+            <Link to={`${props.matchUrl}/show-students`}>Просмотр</Link>
+          </Menu.Item>
+          <Menu.Item key="7">
             <Link to={`${props.matchUrl}/add-students`}>
               Регистрация студентов
             </Link>

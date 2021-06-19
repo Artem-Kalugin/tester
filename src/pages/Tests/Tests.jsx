@@ -44,7 +44,12 @@ const Tests = props => {
                 {typeof el.score === 'undefined' ? (
                   <Button
                     onClick={() =>
-                      props.doTest(el.test, el.limit, el.sessionId, el.unformattedDate)
+                      props.doTest(
+                        el.test,
+                        el.limit,
+                        el.sessionId,
+                        el.unformattedDate,
+                      )
                     }
                     className={s.button}
                     shape={'round'}

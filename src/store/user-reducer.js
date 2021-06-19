@@ -30,7 +30,7 @@ export const setUser = user => {
     });
   };
 };
-export const updateUser= user => {
+export const updateUser = user => {
   return dispatch => {
     dispatch({
       type: UPDATE_USER,

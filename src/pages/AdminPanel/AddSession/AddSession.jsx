@@ -77,7 +77,7 @@ const AddSession = props => {
                 </Form.Item>
 
                 <Form.Item
-                  label="Действителен"
+                  label="Действителен до"
                   name="date"
                   rules={[
                     {

@@ -5,21 +5,19 @@ module.exports = plop => {
       {
         type: 'input',
         name: 'name',
-        message: 'Enter component name'
+        message: 'Enter component name',
       },
     ],
     actions: [
-      { 
+      {
         type: 'add',
         path: 'src/components/{{pascalCase name}}/{{pascalCase name}}.jsx',
         templateFile: 'plop-templates/Component/Component.js.hbs',
       },
       {
         type: 'add',
-        path:
-          'src/components/{{pascalCase name}}/{{pascalCase name}}.module.scss',
-        templateFile:
-          'plop-templates/Component/Component.module.scss.hbs',
+        path: 'src/components/{{pascalCase name}}/{{pascalCase name}}.module.scss',
+        templateFile: 'plop-templates/Component/Component.module.scss.hbs',
       },
       {
         type: 'add',
@@ -35,14 +33,14 @@ module.exports = plop => {
       {
         type: 'append',
         path: 'src/components/index.js',
-        pattern: `/* PLOP_INJECT_IMPORT */`,
-        template: `import {{pascalCase name}} from './{{pascalCase name}}';`,
+        pattern: '/* PLOP_INJECT_IMPORT */',
+        template: "import {{pascalCase name}} from './{{pascalCase name}}';",
       },
       {
         type: 'append',
         path: 'src/components/index.js',
-        pattern: `/* PLOP_INJECT_EXPORT */`,
-        template: `\t{{pascalCase name}},`,
+        pattern: '/* PLOP_INJECT_EXPORT */',
+        template: '\t{{pascalCase name}},',
       },
     ],
   });
@@ -52,7 +50,7 @@ module.exports = plop => {
       {
         type: 'input',
         name: 'name',
-        message: 'Enter page name'
+        message: 'Enter page name',
       },
     ],
     actions: [
@@ -63,10 +61,8 @@ module.exports = plop => {
       },
       {
         type: 'add',
-        path:
-          'src/pages/{{pascalCase name}}/{{pascalCase name}}.module.scss',
-        templateFile:
-          'plop-templates/Page/Page.module.scss.hbs',
+        path: 'src/pages/{{pascalCase name}}/{{pascalCase name}}.module.scss',
+        templateFile: 'plop-templates/Page/Page.module.scss.hbs',
       },
       {
         type: 'add',
@@ -82,14 +78,14 @@ module.exports = plop => {
       {
         type: 'append',
         path: 'src/pages/index.js',
-        pattern: `/* PLOP_INJECT_IMPORT */`,
-        template: `import {{pascalCase name}} from './{{pascalCase name}}';`,
+        pattern: '/* PLOP_INJECT_IMPORT */',
+        template: "import {{pascalCase name}} from './{{pascalCase name}}';",
       },
       {
         type: 'append',
         path: 'src/pages/index.js',
-        pattern: `/* PLOP_INJECT_EXPORT */`,
-        template: `\t{{pascalCase name}},`,
+        pattern: '/* PLOP_INJECT_EXPORT */',
+        template: '\t{{pascalCase name}},',
       },
     ],
   });
@@ -99,12 +95,12 @@ module.exports = plop => {
       {
         type: 'input',
         name: 'name',
-        message: 'Enter new page name'
+        message: 'Enter new page name',
       },
       {
         type: 'input',
         name: 'source',
-        message: 'Enter source page path'
+        message: 'Enter source page path',
       },
     ],
     actions: [
@@ -115,10 +111,8 @@ module.exports = plop => {
       },
       {
         type: 'add',
-        path:
-          'src/pages/{{pascalCase source}}/{{pascalCase name}}/{{pascalCase name}}.module.scss',
-        templateFile:
-          'plop-templates/Page/Page.module.scss.hbs',
+        path: 'src/pages/{{pascalCase source}}/{{pascalCase name}}/{{pascalCase name}}.module.scss',
+        templateFile: 'plop-templates/Page/Page.module.scss.hbs',
       },
       {
         type: 'add',
