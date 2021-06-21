@@ -1,0 +1,5 @@
+.wrapper {
+  display: flex;
+  background: var(--gs-0);
+  width: 230px;
+}

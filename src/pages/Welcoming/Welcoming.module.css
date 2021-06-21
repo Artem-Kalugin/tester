@@ -1,0 +1,22 @@
+.wrapper {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.imageWrapper {
+  width: 30%;
+}
+
+.inputWrapper {
+  border-bottom: 1px solid var(--gs-100);
+}
+
+.blueIcon {
+  color: var(--color-primary);
+}
+
+.inputWrapperFocused {
+  border-bottom: 1px solid var(--color-primary);
+}
