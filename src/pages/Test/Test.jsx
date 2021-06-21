@@ -38,8 +38,11 @@ const Test = props => {
               <div className={s.icons}>
                 <FieldTimeOutlined className={s.icon} />
                 <span>
-                  {addZero(moment.duration(props.timeLeft).minutes())}:
-                  {addZero(moment.duration(props.timeLeft).seconds())}
+                  {addZero(
+                    moment.duration(props.timeLeft).hours() * 60 +
+                      moment.duration(props.timeLeft).minutes(),
+                  )}
+                  :{addZero(moment.duration(props.timeLeft).seconds())}
                 </span>
                 <MenuOutlined
                   onClick={() => props.setShowDrawer(true)}

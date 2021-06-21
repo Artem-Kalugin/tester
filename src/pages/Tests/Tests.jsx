@@ -72,7 +72,6 @@ const Tests = props => {
       : null;
   };
 
-  console.log(props);
   return (
     <div className={s.mainWrapper}>
       <Menu style={{ width: 230 }} defaultSelectedKeys={['0']} mode="inline">

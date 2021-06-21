@@ -3,7 +3,7 @@ import s from './Header.module.scss';
 import { Button, Menu, Dropdown } from 'antd';
 import logo from '../../assets/logo192.png';
 import { UserOutlined } from '@ant-design/icons';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, NavLink } from 'react-router-dom';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import { useSelector } from 'react-redux';
@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 const profileDropdown = (
   <Menu>
     <Menu.Item>
-      <a>Настройки</a>
+      <NavLink to="/profile">Настройки</NavLink>
     </Menu.Item>
     <Menu.Item>
       <a
@@ -45,9 +45,11 @@ const Header = props => {
         <Menu.Item key="/">
           <Link to="/">Приветствие</Link>
         </Menu.Item>
-        <Menu.Item key="tests">
-          <Link to="/tests">Тесты</Link>
-        </Menu.Item>
+        {userState.role !== 'admin' ? (
+          <Menu.Item key="tests">
+            <Link to="/tests">Тесты</Link>
+          </Menu.Item>
+        ) : null}
         {userState.role === 'admin' ? (
           <Menu.Item key="admin">
             <Link to="/admin">Админ Панель</Link>

@@ -51,7 +51,6 @@ const ActiveSessionsContainer = props => {
       });
       message.success({ content: 'Письмо отправлено', key: 'send-mail' });
     } catch (e) {
-      console.log(e);
       message.error({
         content: 'Произошла ошибка при отправлении письма',
         key: 'send-mail',
@@ -104,7 +103,7 @@ const ActiveSessionsContainer = props => {
       message.loading({ content: 'Загрузка', key: 'send-mail' });
       await db.collection('sessions').doc(sessionId).delete();
       message.success({ content: 'Успешно', key: 'send-mail' });
-      getSessions();
+      setSessions(old => old.filter(el => sessionId !== el.sessionId));
     } catch (e) {
       message.error({
         content: 'Произошла ошибка при удалении, попробуйте позже',

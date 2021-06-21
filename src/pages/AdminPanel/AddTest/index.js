@@ -16,7 +16,7 @@ const AddTestContainer = props => {
     const data = await csv({
       noheader: true,
       trim: true,
-      headers: ['question', 'multiselection'],
+      headers: ['question', 'multiselection', 'weight'],
     }).fromString(await file.text());
     setPreparedData(parseData(data));
     return false;
@@ -26,24 +26,17 @@ const AddTestContainer = props => {
     try {
       message.loading({ content: 'Loading...', key: 'add-test' });
       const data = {
+        summaryWeight: preparedData.reduce((acc, el) => +el.weight + acc, 0),
         questions: [...preparedData],
         name: name,
       };
       const addTest = await db.collection('tests').doc().set(data);
-      db.collection('tests')
-        .get()
-        .then(querySnapshot => {
-          querySnapshot.forEach(doc => {
-            console.log(doc.data());
-          });
-        });
       message.success({ content: 'Успешно', key: 'add-test' });
     } catch (e) {
       message.error({
         content: 'Кажется, что-то пошло не так',
         key: 'add-test',
       });
-      console.log(e);
     }
   };
 
@@ -52,6 +45,7 @@ const AddTestContainer = props => {
       if (value.startsWith('+') || value.startsWith('-')) {
         return value.substring(1);
       }
+      return value;
     };
     const formattedData = data
       .map(el => {
@@ -59,11 +53,12 @@ const AddTestContainer = props => {
           const formatedData = {
             question: el.question,
             multiselection: !!el.multiselection,
+            weight: el.weight || 1,
             answers: [],
           };
-
           delete el.question;
           delete el.multiselection;
+          delete el.weight;
 
           for (const [, value] of Object.entries(el)) {
             if (value) {

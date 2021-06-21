@@ -9,7 +9,6 @@ import {
 } from '@ant-design/icons';
 
 const ShowStudents = props => {
-  console.log(props);
   const details = [
     {
       title: 'Группа',

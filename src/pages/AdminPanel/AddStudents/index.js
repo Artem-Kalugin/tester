@@ -49,7 +49,6 @@ const AddStudentsContainer = props => {
       writeResultsToClipboard(_result.join('\n'));
       message.success({ content: 'Успешно', key: 'add-student' });
     } catch (e) {
-      console.log(e);
       message.error({
         content: 'Кажется, что-то пошло не так',
         key: 'add-student',
@@ -87,7 +86,6 @@ const AddStudentsContainer = props => {
             `${index}.\t${el.group}\t${el.name}\t${el.lastName}\t${generatedInviteCode}\t`,
           );
         } catch (e) {
-          console.log(e);
           message.error({
             content: `Не удалось зарегистрировать ${el.name} ${el.lastName} ${el.group}`,
           });
@@ -97,9 +95,7 @@ const AddStudentsContainer = props => {
         for (const el of newGroups) {
           await db.collection('groups').doc().set(el);
         }
-      } catch (e) {
-        console.log(e);
-      }
+      } catch (e) {}
       setResult(_result.join('\n'));
       writeResultsToClipboard(_result.join('\n'));
       message.success({ content: 'Успешно', key: 'add-student' });
@@ -119,7 +115,6 @@ const AddStudentsContainer = props => {
         content: 'Инвайт коды были скопированы в буффер обмена',
       });
     } catch (e) {
-      console.log(data);
       message.error({
         content:
           'При копировании инвайт кодов произошла ошибка, инвайт коды выведены в консоль',

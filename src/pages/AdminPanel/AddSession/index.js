@@ -40,7 +40,6 @@ const AddSessionContainer = props => {
       await db.collection('sessions').doc().set(formatParams(params));
       message.success({ content: 'Успешно', key: 'add-session' });
     } catch (e) {
-      console.log(e);
       message.error({
         content: 'Кажется, что-то пошло не так. Попробуйте позже.',
         key: 'add-session',
@@ -53,8 +52,7 @@ const AddSessionContainer = props => {
     const newParams = { ...params };
     newParams.test = tests.find(el => el.uid === params.testId).name;
     newParams.date = params.date.format();
-    newParams.attemptTime = params.attemptTime.format('HH:mm');
-    console.log(newParams);
+    newParams.attemptTime = params.attemptTime.format('HH:mm') || '00:05';
     return newParams;
   };
 

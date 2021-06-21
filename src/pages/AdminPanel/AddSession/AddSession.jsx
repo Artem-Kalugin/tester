@@ -22,7 +22,6 @@ const tailLayout = {
 };
 
 const AddSession = props => {
-  console.log(props);
   return (
     <div className={`${s.wrapper}`}>
       {props.testsFetched && props.groupsFetched ? (

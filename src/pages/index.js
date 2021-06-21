@@ -1,4 +1,6 @@
 /* PLOP_INJECT_IMPORT */
+import Profile from './Profile';
+import RestorePassword from './RestorePassword';
 import TestResults from './TestResults';
 import Test from './Test';
 import Registration from './Registration';
@@ -9,6 +11,8 @@ import AdminPanel from './AdminPanel';
 
 export {
   /* PLOP_INJECT_EXPORT */
+  Profile,
+  RestorePassword,
   TestResults,
   Test,
   Registration,

@@ -65,7 +65,6 @@ const DeleteTestContainer = props => {
       setSelectedTest();
     } catch (e) {
       message.error({ content: 'Что-то пошло не так', key: 'delete-test' });
-      console.log(e);
     }
   };
 

@@ -7,8 +7,10 @@ import {
   Tests,
   Login,
   Registration,
+  RestorePassword,
   Test,
   TestResults,
+  Profile,
 } from './pages';
 import {
   Switch,
@@ -41,7 +43,6 @@ const Main = () => {
           .get()
           .then(opts => {
             const userData = opts.data();
-            console.log('user data', userData);
             if (!userData?.notDeleted) {
               dispatch(clearUser());
               opts.ref.delete();
@@ -63,7 +64,6 @@ const Main = () => {
 
   const updateUser = async () => {
     if (firebase.auth().currentUser) {
-      console.log('update user');
       firebase
         .firestore()
         .collection('users')
@@ -71,7 +71,6 @@ const Main = () => {
         .get()
         .then(opts => {
           const userData = opts.data();
-          console.log('user data', userData);
           if (!userData?.notDeleted) {
             dispatch(clearUser());
             firebase.auth().currentUser.delete();
@@ -94,12 +93,17 @@ const Main = () => {
       <>
         <Header />
         <Switch>
+          <Route exact path="/profile">
+            <Profile />
+          </Route>
           <Route exact path="/">
             <Welcoming />
           </Route>
-          <Route path="/tests">
-            <Tests />
-          </Route>
+          {userState.role !== 'admin' ? (
+            <Route path="/tests">
+              <Tests />
+            </Route>
+          ) : null}
           <Route path="/test">
             <Test />
           </Route>
@@ -133,6 +137,9 @@ function App() {
             </Route>
             <Route exact path="/registration">
               <Registration />
+            </Route>
+            <Route exact path="/password-restore">
+              <RestorePassword />
             </Route>
             <Route path="/">
               <Main />

@@ -4,7 +4,6 @@ import { Upload, Button, Typography, Input, Space } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 
 const AddTest = props => {
-  console.log(props);
   return (
     <div className={`${s.wrapper}`}>
       <Space direction="vertical">

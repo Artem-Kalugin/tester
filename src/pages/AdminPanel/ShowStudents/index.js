@@ -79,9 +79,7 @@ const ShowStudentsContainer = props => {
         });
       getGroups();
       message.success({ content: 'Успешно', key: 'add-session' });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const deleteGroup = async group => {
@@ -102,9 +100,7 @@ const ShowStudentsContainer = props => {
       await db.collection('groups').doc(group.uid).delete();
       message.success({ content: 'Успешно', key: 'add-session' });
       getGroups();
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -146,9 +142,7 @@ const ShowStudentsContainer = props => {
       setStudents(students);
       setData(organizeData(groups, students));
       setFetched(true);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   return (

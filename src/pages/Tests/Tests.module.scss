@@ -35,6 +35,10 @@
   border-top: 3px solid var(--gs-100);
 }
 
+.wrapper {
+  overflow: auto;
+}
+
 .button {
   margin-top: 30px;
   width: 80%;

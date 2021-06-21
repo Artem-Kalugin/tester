@@ -10,14 +10,12 @@ export default async function sendEmail(body) {
 
     let result = null;
     result = await res;
-    console.log('res', res);
     if (res.status > 399) {
       throw result;
     }
 
     return result;
   } catch (e) {
-    console.log(e);
     throw e;
   }
 }

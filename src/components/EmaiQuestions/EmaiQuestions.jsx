@@ -63,8 +63,9 @@ const renderQuestion = (props, index, emailing, seeResults) => {
       }
       className={`${s.question} shadow-small`}>
       <Typography.Title style={{ margin: 0 }} level={4}>
-        {index + 1}. {props.question}
+        {index + 1}. Вопрос: {props.question}
       </Typography.Title>
+      <Typography.Text>Вес вопроса: {props.weight}</Typography.Text>
       {props.multiselection ? (
         <Typography.Text>
           Вы можете выбрать несколько вариантов ответа.

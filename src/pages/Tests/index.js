@@ -77,9 +77,7 @@ const TestsContainer = props => {
         setSessions(mappedSessions);
         getTests(mappedSessions);
       }
-    } catch (e) {
-      // console.log(e);
-    }
+    } catch (e) {}
   };
 
   const getTests = async (sessions = sessions) => {
@@ -90,9 +88,7 @@ const TestsContainer = props => {
       setTests(mappedTests);
       formatData(sessions, mappedTests);
       setInitialized(true);
-    } catch (e) {
-      // console.log(e);
-    }
+    } catch (e) {}
   };
 
   const registerAttempt = async (test, limit, sessionId, maxDate) => {
@@ -108,7 +104,12 @@ const TestsContainer = props => {
         .doc(sessionId)
         .collection('attempts')
         .doc(userState.uid)
-        .set({ score: 0 });
+        .set({
+          name: userState.name,
+          lastName: userState.lastName,
+          elapsedTime: 'Не окончил',
+          score: 0,
+        });
       history.push({
         pathname: '/test',
         state: { test: test, limit: limit, sessionId: sessionId },
@@ -145,7 +146,6 @@ const TestsContainer = props => {
       const test = _tests.find(item => el.test === item.name);
       const hoursLimit = date.format('HH');
       const minsLimit = date.format('mm');
-      console.log(date, hoursLimit, minsLimit);
       const title = test.name;
       const questionAmount = test.questions.length;
       const hoursFormat = +hoursLimit

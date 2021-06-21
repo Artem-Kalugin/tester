@@ -1,7 +1,7 @@
 import React from 'react';
 import s from './Login.module.scss';
 import { Typography, Space, Button, Input, Form, Checkbox } from 'antd';
-import { useHistory } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 
 const Login = props => {
   const layout = {
@@ -64,7 +64,9 @@ const Login = props => {
           </Form.Item>
 
           <Form.Item {...layout} name="remember" valuePropName="checked">
-            <Typography.Text>Забыли пароль?</Typography.Text>
+            <NavLink to="/password-restore">
+              <Typography.Text>Забыли пароль?</Typography.Text>
+            </NavLink>
           </Form.Item>
         </Form>
       </div>
